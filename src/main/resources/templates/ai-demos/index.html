@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${title}, ~{::content})}">
+<head>
+    <title th:text="${title}">AI Demos & Applications - Somdip Roy</title>
+</head>
+<div th:fragment="content">
+    <!-- AI Demos Hero -->
+    <section class="gradient-bg text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">AI Applications & Demos</h1>
+            <p class="text-xl text-blue-100 max-w-3xl mx-auto">
+                Live demonstrations of enterprise AI solutions using AWS machine learning services
+            </p>
+        </div>
+    </section>
+
+    <!-- Demos Grid -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div th:each="demo : ${demos}" class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
+                    <!-- Demo Header -->
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div th:class="'p-3 rounded-full mr-4 text-white bg-' + ${demo.color} + '-600'">
+                                <i th:class="${demo.icon} + ' text-xl'"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800" th:text="${demo.title}">Demo Title</h3>
+                                <div th:switch="${demo.status}">
+                                    <span th:case="'live'" class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">
+                                        🟢 Live Demo
+                                    </span>
+                                    <span th:case="'development'" class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold">
+                                        🟡 In Development
+                                    </span>
+                                    <span th:case="'planning'" class="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-semibold">
+                                        ⚪ Planned
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-600 mb-4" th:text="${demo.description}">Description</p>
+                        
+                        <!-- Technologies -->
+                        <div class="mb-4">
+                            <div class="flex flex-wrap gap-2">
+                                <span th:each="tag : ${demo.tags}" 
+                                      class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium"
+                                      th:text="${tag}">Tag</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div>
+                            <div th:if="${demo.status == 'live'}" class="flex space-x-2">
+                                <a th:href="'/ai-demos/' + ${demo.id}" 
+                                   th:class="'flex-1 bg-' + ${demo.color} + '-600 text-white text-center py-2 px-4 rounded-lg hover:bg-' + ${demo.color} + '-700 transition text-sm font-semibold'">
+                                    <i class="fas fa-play mr-2"></i>Try Demo
+                                </a>
+                            </div>
+                            <div th:unless="${demo.status == 'live'}" class="text-center">
+                                <span class="text-gray-500 text-sm">
+                                    <i class="fas fa-clock mr-2"></i>Coming Soon
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 bg-blue-600 text-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">Interested in Custom AI Solutions?</h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Let's discuss how AI-powered automation can transform your business processes.
+            </p>
+            <a href="/contact" class="bg-white text-blue-600 px-8 py-3 rounded-lg hover:bg-gray-100 transition font-semibold">
+                <i class="fas fa-comments mr-2"></i>Get In Touch
+            </a>
+        </div>
+    </section>
+</div>
+</html>

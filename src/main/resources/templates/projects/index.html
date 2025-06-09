@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${title}, ~{::content})}">
+<head>
+    <title th:text="${title}">Projects & Portfolio - Somdip Roy</title>
+</head>
+<div th:fragment="content">
+    <!-- Projects Hero -->
+    <section class="gradient-bg text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">Projects & Portfolio</h1>
+            <p class="text-xl text-blue-100 max-w-3xl mx-auto">
+                Explore my professional projects spanning enterprise development, cloud architecture, 
+                security implementation, and innovative technology solutions.
+            </p>
+        </div>
+    </section>
+
+    <!-- Project Stats -->
+    <section class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div class="bg-blue-50 p-6 rounded-xl">
+                    <div class="text-3xl font-bold text-blue-600" th:text="${techStats.totalProjects}">6</div>
+                    <div class="text-gray-600">Total Projects</div>
+                </div>
+                <div class="bg-green-50 p-6 rounded-xl">
+                    <div class="text-3xl font-bold text-green-600" th:text="${techStats.completedProjects}">5</div>
+                    <div class="text-gray-600">Completed</div>
+                </div>
+                <div class="bg-purple-50 p-6 rounded-xl">
+                    <div class="text-3xl font-bold text-purple-600" th:text="${techStats.technologiesUsed}">25</div>
+                    <div class="text-gray-600">Technologies</div>
+                </div>
+                <div class="bg-orange-50 p-6 rounded-xl">
+                    <div class="text-3xl font-bold text-orange-600" th:text="${techStats.teamMembers}">50+</div>
+                    <div class="text-gray-600">Team Members</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Filter -->
+    <section class="py-8 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-wrap justify-center gap-4">
+                <button th:each="category : ${categories}" 
+                        th:text="${category}"
+                        class="px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-blue-600 hover:text-white transition filter-btn"
+                        th:attr="data-category=${category}">Category</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Grid -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div th:each="project : ${projects}" 
+                     class="bg-white rounded-xl shadow-lg overflow-hidden card-hover project-card"
+                     th:attr="data-category=${project.category}">
+                    
+                    <!-- Project Header -->
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div th:class="'p-3 rounded-full mr-4 text-white bg-' + ${project.color} + '-600'">
+                                <i th:class="${project.icon} + ' text-xl'"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800" th:text="${project.title}">Project Title</h3>
+                                <div class="flex items-center mt-1">
+                                    <span th:switch="${project.status}">
+                                        <span th:case="'completed'" class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">
+                                            ✅ Completed
+                                        </span>
+                                        <span th:case="'ongoing'" class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold">
+                                            🔄 Ongoing
+                                        </span>
+                                        <span th:case="*" class="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-semibold">
+                                            📋 Planned
+                                        </span>
+                                    </span>
+                                    <span class="text-gray-500 text-xs ml-2" th:text="${project.category}">Category</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-600 mb-4" th:text="${project.description}">Description</p>
+                        
+                        <!-- Project Details -->
+                        <div class="space-y-2 text-sm text-gray-600 mb-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-clock mr-2 text-gray-400"></i>
+                                <span>Duration: </span>
+                                <span th:text="${project.duration}" class="font-medium">6 months</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-users mr-2 text-gray-400"></i>
+                                <span>Team: </span>
+                                <span th:text="${project.team}" class="font-medium">15+ developers</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Technologies -->
+                        <div class="mb-4">
+                            <h5 class="text-sm font-semibold text-gray-800 mb-2">Technologies Used</h5>
+                            <div class="flex flex-wrap gap-1">
+                                <span th:each="tech : ${project.technologies}" 
+                                      class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium"
+                                      th:text="${tech}">Technology</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Key Highlights -->
+                        <div>
+                            <h5 class="text-sm font-semibold text-gray-800 mb-2">Key Highlights</h5>
+                            <ul class="space-y-1">
+                                <li th:each="highlight : ${project.highlights}" 
+                                    class="text-xs text-gray-600 flex items-start">
+                                    <i class="fas fa-check text-green-500 mr-2 mt-1 text-xs"></i>
+                                    <span th:text="${highlight}">Highlight</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Project Footer -->
+                    <div class="px-6 pb-6">
+                        <div th:if="${project.status == 'completed'}" class="text-center">
+                            <button class="w-full bg-gray-100 text-gray-600 py-2 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition">
+                                <i class="fas fa-info-circle mr-2"></i>View Details
+                            </button>
+                        </div>
+                        <div th:unless="${project.status == 'completed'}" class="text-center">
+                            <span class="text-gray-500 text-sm">
+                                <i class="fas fa-tools mr-2"></i>In Progress
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Approach -->
+    <section class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">My Approach to Project Development</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-lightbulb text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Strategic Planning</h3>
+                    <p class="text-gray-600">
+                        Every project begins with thorough requirement analysis, stakeholder alignment, 
+                        and strategic roadmap development to ensure successful delivery.
+                    </p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-cogs text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Agile Execution</h3>
+                    <p class="text-gray-600">
+                        Implementing agile methodologies with continuous integration, regular sprints, 
+                        and iterative feedback loops for optimal project outcomes.
+                    </p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-line text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Continuous Improvement</h3>
+                    <p class="text-gray-600">
+                        Post-delivery monitoring, performance optimization, and knowledge transfer 
+                        to ensure long-term success and team capability building.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 bg-blue-600 text-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">Ready to Start Your Next Project?</h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Let's discuss how my experience with enterprise projects can help bring your vision to life.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/contact" class="bg-white text-blue-600 px-8 py-3 rounded-lg hover:bg-gray-100 transition font-semibold">
+                    <i class="fas fa-handshake mr-2"></i>Let's Collaborate
+                </a>
+                <a href="/experience" class="border-2 border-white text-white px-8 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition font-semibold">
+                    <i class="fas fa-briefcase mr-2"></i>View Experience
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- JavaScript for Category Filtering -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+    
+    // Set default active filter
+    filterButtons[0].classList.add('bg-blue-600', 'text-white');
+    filterButtons[0].classList.remove('bg-white', 'hover:bg-blue-600', 'hover:text-white');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const category = this.getAttribute('data-category');
+            
+            // Reset all buttons
+            filterButtons.forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-white', 'hover:bg-blue-600', 'hover:text-white');
+            });
+            
+            // Set active button
+            this.classList.add('bg-blue-600', 'text-white');
+            this.classList.remove('bg-white', 'hover:bg-blue-600', 'hover:text-white');
+            
+            // Filter projects
+            projectCards.forEach(card => {
+                if (category === 'All Projects' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'block';
+                    card.classList.add('fade-in');
+                } else {
+                    card.style.display = 'none';
+                    card.classList.remove('fade-in');
+                }
+            });
+        });
+    });
+});
+</script>
+</html>

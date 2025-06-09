@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${title}, ~{::content})}">
+<head>
+    <title th:text="${title}">Somdip Roy - Technical Architect</title>
+</head>
+<div th:fragment="content">
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <div class="text-sm font-semibold text-blue-200 uppercase tracking-wide">
+                        Technical Architect
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold leading-tight">
+                        Hi, I'm <span class="text-yellow-300">Somdip Roy</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl text-blue-100 leading-relaxed">
+                        <span th:text="${yearsExperience}">12</span>+ years building enterprise solutions with
+                        <strong>Java</strong>, <strong>Spring</strong>, and <strong>AWS</strong>.
+                    </p>
+                    <p class="text-lg text-blue-200">
+                        Currently leading <span th:text="${teamSize}">15</span>+ developers across
+                        <span th:text="${applicationsManaged}">22</span>+ applications at UPL,
+                        with proven track record of saving <span th:text="${costSavings}">$300K</span> annually.
+                    </p>
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                        <a href="/ai-demos"
+                           class="bg-white text-blue-600 px-8 py-4 rounded-lg hover:bg-gray-100 transition font-semibold">
+                            <i class="fas fa-rocket mr-2"></i>Explore AI Demos
+                        </a>
+                        <a href="/experience"
+                           class="border-2 border-white text-white px-8 py-4 rounded-lg hover:bg-white hover:text-blue-600 transition font-semibold">
+                            <i class="fas fa-briefcase mr-2"></i>View Experience
+                        </a>
+                        <a href="/resume/Somdip_Roy_Resume.pdf" target="_blank"
+                           class="border-2 border-blue-200 text-blue-200 px-8 py-4 rounded-lg hover:bg-blue-200 hover:text-blue-600 transition font-semibold">
+                            <i class="fas fa-download mr-2"></i>Download Resume
+                        </a>
+                    </div>
+                </div>
+                <!-- Professional Image/Stats -->
+                <div class="text-center">
+                    <div class="bg-white bg-opacity-10 rounded-2xl p-8 backdrop-blur-sm">
+                        <div class="w-32 h-32 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-user-tie text-blue-600 text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4">Key Achievements</h3>
+                        <div class="grid grid-cols-2 gap-4 text-center">
+                            <div>
+                                <div class="text-2xl font-bold text-yellow-300" th:text="${yearsExperience}">12</div>
+                                <div class="text-sm text-blue-200">Years Experience</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-yellow-300" th:text="${applicationsManaged}">22+</div>
+                                <div class="text-sm text-blue-200">Applications</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-yellow-300" th:text="${teamSize}">15+</div>
+                                <div class="text-sm text-blue-200">Team Members</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-yellow-300" th:text="${costSavings}">$300K</div>
+                                <div class="text-sm text-blue-200">Cost Savings</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Expertise -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Core Expertise</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Specialized in enterprise Java development, cloud architecture, and security implementation
+                </p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Enterprise Development -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-xl card-hover">
+                    <div class="text-blue-600 mb-6">
+                        <i class="fas fa-code text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Enterprise Development</h3>
+                    <p class="text-gray-600 mb-6">
+                        Expert in Java, Spring Framework, microservices architecture, and enterprise integration patterns.
+                    </p>
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm text-gray-700">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>Java 17 & Spring Boot</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>Microservices Architecture</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>REST APIs & Integration</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cloud & DevOps -->
+                <div class="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-xl card-hover">
+                    <div class="text-green-600 mb-6">
+                        <i class="fas fa-cloud text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">AWS Cloud & DevOps</h3>
+                    <p class="text-gray-600 mb-6">
+                        AWS Solutions Architect certified with expertise in cloud migration, DevOps, and infrastructure automation.
+                    </p>
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm text-gray-700">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>AWS Solutions Architect</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>CI/CD with GitHub Actions</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>Kubernetes & Docker</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security & Compliance -->
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-xl card-hover">
+                    <div class="text-purple-600 mb-6">
+                        <i class="fas fa-shield-alt text-4xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Security & Compliance</h3>
+                    <p class="text-gray-600 mb-6">
+                        DevSecOps certified with extensive experience in SAST, DAST, penetration testing, and compliance frameworks.
+                    </p>
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm text-gray-700">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>SAST/DAST Integration</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>VAPT/WAPT Testing</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-700">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span>Spring Security & JWT</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Skills -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Technical Skills</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div th:each="skill : ${featuredSkills}" class="bg-white p-6 rounded-xl shadow-lg card-hover">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-semibold text-gray-800" th:text="${skill.name}">Skill</h3>
+                        <span class="text-sm text-gray-600" th:text="${skill.proficiencyLevel}">Level</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="skill-bar rounded-full h-2" th:style="'width: ' + ${skill.proficiency} + '%'"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2" th:text="${skill.description}">Description</p>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <a href="/about" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                    <i class="fas fa-list mr-2"></i>View All Skills
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured AI Demo -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Featured AI Application</h2>
+                <p class="text-xl text-gray-600">Live demonstration of enterprise AI solutions</p>
+            </div>
+            <!-- HR Resume Screening Demo -->
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl overflow-hidden">
+                <div class="md:flex">
+                    <div class="md:w-3/5 p-8 text-white">
+                        <div class="flex items-center mb-6">
+                            <div class="bg-white bg-opacity-20 p-3 rounded-full mr-4">
+                                <i class="fas fa-users text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold">HR Resume Screening</h3>
+                                <div class="flex items-center mt-1">
+                                    <span class="bg-green-400 text-green-900 text-xs px-2 py-1 rounded-full mr-2">LIVE</span>
+                                    <span class="text-blue-200 text-sm">Production Ready</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-lg text-blue-100 mb-6">
+                            Complete AI-powered hiring automation system using AWS Textract and Comprehend.
+                            Demonstrates enterprise-grade document processing and intelligent matching.
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle mr-3 text-green-400"></i>
+                                    <span>Resume parsing with Amazon Textract</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle mr-3 text-green-400"></i>
+                                    <span>Skills extraction with Comprehend</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle mr-3 text-green-400"></i>
+                                    <span>Intelligent job matching algorithm</span>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <i class="fas fa-chart-line mr-3 text-yellow-300"></i>
+                                    <span>90% faster resume processing</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-target mr-3 text-yellow-300"></i>
+                                    <span>85% matching accuracy</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-users mr-3 text-yellow-300"></i>
+                                    <span>150+ resumes processed</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex space-x-4">
+                            <a href="/ai-demos/hr-screening"
+                               class="bg-white text-blue-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition font-semibold">
+                                <i class="fas fa-play mr-2"></i>Try Live Demo
+                            </a>
+                            <a href="https://github.com/somdiproy/hr-resume-screening" target="_blank"
+                               class="border-2 border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition font-semibold">
+                                <i class="fab fa-github mr-2"></i>View Code
+                            </a>
+                        </div>
+                    </div>
+                    <div class="md:w-2/5 bg-white bg-opacity-10 p-8 flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="bg-white bg-opacity-20 w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-brain text-6xl text-yellow-300"></i>
+                            </div>
+                            <h4 class="text-xl font-semibold mb-2">AI-Powered Processing</h4>
+                            <p class="text-blue-200">
+                                Experience enterprise AI in action with real document processing and intelligent analysis.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Experience Highlight -->
+    <section class="py-16 bg-gray-900 text-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Current Role</h2>
+                <p class="text-xl text-gray-300">Leading technical architecture at United Phosphorous Limited</p>
+            </div>
+            <div class="bg-gray-800 rounded-xl p-8">
+                <div class="md:flex items-start space-y-6 md:space-y-0 md:space-x-8">
+                    <div class="md:w-1/3">
+                        <h3 class="text-2xl font-bold text-blue-400 mb-2">Technical Architect</h3>
+                        <div class="text-gray-300 mb-4">
+                            <p class="font-semibold">United Phosphorous Limited (UPL)</p>
+                            <p>Oct 2022 - Present</p>
+                            <p>Mumbai, India</p>
+                        </div>
+                        <div class="bg-blue-600 text-white px-4 py-2 rounded-lg inline-block">
+                            Current Position
+                        </div>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h4 class="text-xl font-semibold mb-4 text-gray-200">Key Achievements</h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <i class="fas fa-users text-blue-400 mr-3 mt-1"></i>
+                                    <span>Managing team of <strong>15+ developers</strong> across multiple projects</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-dollar-sign text-green-400 mr-3 mt-1"></i>
+                                    <span>Saved <strong>$300K annually</strong> through SSO migration optimization</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-cloud text-purple-400 mr-3 mt-1"></i>
+                                    <span>Achieved <strong>15% reduction</strong> in cloud computing costs</span>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <i class="fas fa-shield-alt text-red-400 mr-3 mt-1"></i>
+                                    <span>Integrated <strong>SAST/DAST</strong> security into CI/CD pipelines</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-server text-yellow-400 mr-3 mt-1"></i>
+                                    <span>Migrated <strong>6 Oracle servers</strong> to AWS within one month</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fas fa-cogs text-gray-400 mr-3 mt-1"></i>
+                                    <span>Overseeing <strong>22+ applications</strong> in production</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <a href="/experience" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                    <i class="fas fa-briefcase mr-2"></i>View Full Experience
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 bg-blue-600 text-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">Ready to Build Something Amazing?</h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Let's discuss how my expertise in Java, Spring, AWS, and enterprise architecture
+                can help drive your next project to success.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/contact"
+                   class="bg-white text-blue-600 px-8 py-3 rounded-lg hover:bg-gray-100 transition font-semibold">
+                    <i class="fas fa-handshake mr-2"></i>Let's Connect
+                </a>
+                <a href="mailto:somdiproy.roy@gmail.com"
+                   class="border-2 border-white text-white px-8 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition font-semibold">
+                    <i class="fas fa-envelope mr-2"></i>Email Me
+                </a>
+            </div>
+        </div>
+    </section>
+
+</div>
+</html>

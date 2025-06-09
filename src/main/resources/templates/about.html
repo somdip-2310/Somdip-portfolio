@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${title}, ~{::content})}">
+<head>
+    <title th:text="${title}">About Somdip Roy - Technical Architect</title>
+</head>
+<div th:fragment="content">
+    <!-- About Hero -->
+    <section class="gradient-bg text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">About Me</h1>
+            <p class="text-xl text-blue-100 max-w-3xl mx-auto">
+                Passionate Technical Architect with 12+ years of experience building scalable enterprise solutions
+            </p>
+        </div>
+    </section>
+
+    <!-- About Content -->
+    <section class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">My Journey</h2>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>
+                            I'm a Technical Architect with over 12 years of experience in enterprise Java development, 
+                            cloud architecture, and security implementation. Currently leading a team of 15+ developers 
+                            at United Phosphorous Limited, where I oversee 22+ applications and have achieved significant 
+                            cost savings and performance improvements.
+                        </p>
+                        <p>
+                            My expertise spans the entire software development lifecycle, from architecture design 
+                            to deployment and monitoring. I'm passionate about leveraging cutting-edge technologies 
+                            like AWS cloud services, AI/ML, and modern DevOps practices to solve complex business challenges.
+                        </p>
+                        <p>
+                            I hold AWS Solutions Architect certification and DevSecOps Foundation certification, 
+                            demonstrating my commitment to staying current with industry best practices and emerging technologies.
+                        </p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl">
+                        <div class="w-32 h-32 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-user-tie text-white text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Professional Highlights</h3>
+                        <div class="grid grid-cols-2 gap-4 text-center">
+                            <div class="bg-white p-4 rounded-lg shadow">
+                                <div class="text-2xl font-bold text-blue-600">12+</div>
+                                <div class="text-sm text-gray-600">Years Experience</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow">
+                                <div class="text-2xl font-bold text-green-600">$300K</div>
+                                <div class="text-sm text-gray-600">Annual Savings</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow">
+                                <div class="text-2xl font-bold text-purple-600">22+</div>
+                                <div class="text-sm text-gray-600">Applications</div>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow">
+                                <div class="text-2xl font-bold text-orange-600">15+</div>
+                                <div class="text-sm text-gray-600">Team Members</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Technical Skills</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div th:each="skill : ${skills}" class="bg-white p-6 rounded-xl shadow-lg">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-semibold text-gray-800" th:text="${skill.name}">Skill</h3>
+                        <span class="text-sm font-medium text-blue-600" th:text="${skill.proficiencyLevel}">Level</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
+                        <div class="skill-bar rounded-full h-2" th:style="'width: ' + ${skill.proficiency} + '%'"></div>
+                    </div>
+                    <p class="text-sm text-gray-600" th:text="${skill.description}">Description</p>
+                    <span class="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs mt-2" th:text="${skill.category}">Category</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications -->
+    <section class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Professional Certifications</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div th:each="cert : ${certifications}" class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200">
+                    <div class="flex items-start">
+                        <i class="fas fa-certificate text-blue-600 text-2xl mr-4 mt-1"></i>
+                        <div>
+                            <h3 class="font-semibold text-gray-800" th:text="${cert}">Certification</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</html>

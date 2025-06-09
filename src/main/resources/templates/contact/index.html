@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${title}, ~{::content})}">
+<head>
+    <title th:text="${title}">Contact Somdip Roy - Technical Architect</title>
+</head>
+<div th:fragment="content">
+    <!-- Contact Hero -->
+    <section class="gradient-bg text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6">Let's Build Something Amazing</h1>
+            <p class="text-xl text-blue-100 max-w-3xl mx-auto">
+                Ready to discuss your next project? I'd love to hear about your technical challenges 
+                and explore how we can work together to create innovative solutions.
+            </p>
+        </div>
+    </section>
+
+    <!-- Success/Error Messages -->
+    <div th:if="${successMessage}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded max-w-4xl mx-auto mt-8">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-3"></i>
+            <span th:text="${successMessage}">Success message</span>
+        </div>
+    </div>
+    
+    <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded max-w-4xl mx-auto mt-8">
+        <div class="flex items-center">
+            <i class="fas fa-exclamation-circle mr-3"></i>
+            <span th:text="${errorMessage}">Error message</span>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Contact Information -->
+                <div class="space-y-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-6">Get In Touch</h2>
+                        <p class="text-lg text-gray-600 mb-8">
+                            Whether you're looking for a technical architect, need consultation on cloud migration, 
+                            or want to discuss AI integration, I'm here to help bring your vision to life.
+                        </p>
+                    </div>
+
+                    <!-- Contact Methods -->
+                    <div class="space-y-6">
+                        <div class="flex items-center">
+                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-envelope text-blue-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Email</h3>
+                                <a href="mailto:somdiproy.roy@gmail.com" class="text-blue-600 hover:text-blue-800">
+                                    somdiproy.roy@gmail.com
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="bg-green-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-phone text-green-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Phone</h3>
+                                <a href="tel:+919004233112" class="text-green-600 hover:text-green-800">
+                                    +91 9004233112
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="bg-purple-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-map-marker-alt text-purple-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Location</h3>
+                                <p class="text-gray-600">Mumbai, India</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="bg-yellow-100 p-3 rounded-full mr-4">
+                                <i class="fab fa-linkedin text-yellow-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">LinkedIn</h3>
+                                <a href="https://linkedin.com/in/somdip-roy" target="_blank" 
+                                   class="text-yellow-600 hover:text-yellow-800">
+                                    linkedin.com/in/somdip-roy
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Response Time -->
+                    <div class="bg-blue-50 p-6 rounded-xl">
+                        <h3 class="font-semibold text-gray-800 mb-2">Response Time</h3>
+                        <p class="text-gray-600">
+                            I typically respond to all inquiries within 24 hours. For urgent matters, 
+                            feel free to call me directly.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Send Message</h2>
+                    
+                    <form th:action="@{/contact}" th:object="${contactForm}" method="post" class="space-y-6">
+                        <!-- Name and Email Row -->
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Name <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" th:field="*{name}" id="name" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="Your full name">
+                                <div th:if="${#fields.hasErrors('name')}" class="text-red-500 text-sm mt-1">
+                                    <span th:errors="*{name}">Name error</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Email <span class="text-red-500">*</span>
+                                </label>
+                                <input type="email" th:field="*{email}" id="email" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="your.email@company.com">
+                                <div th:if="${#fields.hasErrors('email')}" class="text-red-500 text-sm mt-1">
+                                    <span th:errors="*{email}">Email error</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Company and Phone Row -->
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="company" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Company
+                                </label>
+                                <input type="text" th:field="*{company}" id="company" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="Your company name">
+                            </div>
+                            
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Phone
+                                </label>
+                                <input type="tel" th:field="*{phone}" id="phone" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="+1 (555) 123-4567">
+                            </div>
+                        </div>
+
+                        <!-- Project Details Row -->
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div>
+                                <label for="projectType" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Project Type
+                                </label>
+                                <select th:field="*{projectType}" id="projectType" 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Select type</option>
+                                    <option value="enterprise-development">Enterprise Development</option>
+                                    <option value="cloud-migration">Cloud Migration</option>
+                                    <option value="ai-integration">AI Integration</option>
+                                    <option value="security-audit">Security Audit</option>
+                                    <option value="consultation">Technical Consultation</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label for="timeline" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Timeline
+                                </label>
+                                <select th:field="*{timeline}" id="timeline" 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Select timeline</option>
+                                    <option value="immediate">Immediate (< 1 month)</option>
+                                    <option value="short-term">Short-term (1-3 months)</option>
+                                    <option value="medium-term">Medium-term (3-6 months)</option>
+                                    <option value="long-term">Long-term (6+ months)</option>
+                                    <option value="ongoing">Ongoing support</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label for="budget" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Budget Range
+                                </label>
+                                <select th:field="*{budget}" id="budget" 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Select range</option>
+                                    <option value="under-10k">Under $10K</option>
+                                    <option value="10k-25k">$10K - $25K</option>
+                                    <option value="25k-50k">$25K - $50K</option>
+                                    <option value="50k-100k">$50K - $100K</option>
+                                    <option value="over-100k">Over $100K</option>
+                                    <option value="discuss">Let's discuss</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Subject -->
+                        <div>
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">
+                                Subject <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" th:field="*{subject}" id="subject" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="Brief description of your project or inquiry">
+                            <div th:if="${#fields.hasErrors('subject')}" class="text-red-500 text-sm mt-1">
+                                <span th:errors="*{subject}">Subject error</span>
+                            </div>
+                        </div>
+
+                        <!-- Message -->
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+                                Message <span class="text-red-500">*</span>
+                            </label>
+                            <textarea th:field="*{message}" id="message" rows="6" 
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                      placeholder="Please provide details about your project, technical requirements, challenges you're facing, or any specific questions you have. The more information you share, the better I can assist you."></textarea>
+                            <div th:if="${#fields.hasErrors('message')}" class="text-red-500 text-sm mt-1">
+                                <span th:errors="*{message}">Message error</span>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div>
+                            <button type="submit" 
+                                    class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-200 font-semibold">
+                                <i class="fas fa-paper-plane mr-2"></i>Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Work With Me -->
+    <section class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Why Work With Me?</h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-award text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Proven Expertise</h3>
+                    <p class="text-gray-600">
+                        12+ years of hands-on experience with enterprise-grade solutions, 
+                        AWS certified, and a track record of successful project deliveries.
+                    </p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-rocket text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Results-Driven</h3>
+                    <p class="text-gray-600">
+                        Focused on delivering measurable business value. I've helped companies 
+                        save $300K+ annually and improve operational efficiency by 90%.
+                    </p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-handshake text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Collaborative Approach</h3>
+                    <p class="text-gray-600">
+                        I believe in transparent communication, regular updates, and working 
+                        closely with your team to ensure project success.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</html>
