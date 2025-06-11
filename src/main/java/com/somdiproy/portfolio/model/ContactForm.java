@@ -4,6 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Contact form model - Updated to remove projectType, timeline, budget, and phone fields
+ * as per the simplified contact form requirements
+ */
 public class ContactForm {
     
     @NotBlank(message = "Name is required")
@@ -17,9 +21,6 @@ public class ContactForm {
     @Size(max = 100, message = "Company name cannot exceed 100 characters")
     private String company;
     
-    @Size(max = 20, message = "Phone number cannot exceed 20 characters")
-    private String phone;
-    
     @NotBlank(message = "Subject is required")
     @Size(min = 5, max = 200, message = "Subject must be between 5 and 200 characters")
     private String subject;
@@ -28,66 +29,78 @@ public class ContactForm {
     @Size(min = 10, max = 2000, message = "Message must be between 10 and 2000 characters")
     private String message;
     
-    private String projectType;
-    private String timeline;
-    private String budget;
+    // Removed fields: phone, projectType, timeline, budget
     
-    // Constructors
+    // Default constructor
     public ContactForm() {}
     
-    public ContactForm(String name, String email, String company, String phone, 
-                      String subject, String message, String projectType, 
-                      String timeline, String budget) {
+    // Updated constructor with only remaining fields
+    public ContactForm(String name, String email, String company, String subject, String message) {
         this.name = name;
         this.email = email;
         this.company = company;
-        this.phone = phone;
         this.subject = subject;
         this.message = message;
-        this.projectType = projectType;
-        this.timeline = timeline;
-        this.budget = budget;
     }
     
     // Getters and Setters
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
     
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setName(String name) {
+        this.name = name;
+    }
     
-    public String getCompany() { return company; }
-    public void setCompany(String company) { this.company = company; }
+    public String getEmail() {
+        return email;
+    }
     
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
     
-    public String getSubject() { return subject; }
-    public void setSubject(String subject) { this.subject = subject; }
+    public String getCompany() {
+        return company;
+    }
     
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
+    public void setCompany(String company) {
+        this.company = company;
+    }
     
-    public String getProjectType() { return projectType; }
-    public void setProjectType(String projectType) { this.projectType = projectType; }
+    public String getSubject() {
+        return subject;
+    }
     
-    public String getTimeline() { return timeline; }
-    public void setTimeline(String timeline) { this.timeline = timeline; }
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
     
-    public String getBudget() { return budget; }
-    public void setBudget(String budget) { this.budget = budget; }
+    public String getMessage() {
+        return message;
+    }
     
+    public void setMessage(String message) {
+        this.message = message;
+    }
+    
+    // Updated toString method with only remaining fields
     @Override
     public String toString() {
         return "ContactForm{" +
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", company='" + company + '\'' +
-                ", phone='" + phone + '\'' +
                 ", subject='" + subject + '\'' +
-                ", projectType='" + projectType + '\'' +
-                ", timeline='" + timeline + '\'' +
-                ", budget='" + budget + '\'' +
+                ", message='" + message + '\'' +
                 '}';
+    }
+    
+    // Utility method for validation
+    public boolean isValid() {
+        return name != null && !name.trim().isEmpty() &&
+               email != null && !email.trim().isEmpty() &&
+               subject != null && !subject.trim().isEmpty() &&
+               message != null && !message.trim().isEmpty();
     }
 }

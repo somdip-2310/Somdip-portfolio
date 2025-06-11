@@ -2,7 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/layout :: layout(${title}, ~{::content})}">
 <head>
-    <title th:text="${title}">About Somdip Roy - Technical Architect</title>
+    <title th:text="${title}">About Somdip Roy - Senior Technical Architect | 13+ Years Java Spring AWS Expert</title>
+    <meta name="description" content="Learn about Somdip Roy, Senior Technical Architect with 13+ years of enterprise Java development, AWS cloud solutions, and AI/ML expertise. Currently leading development teams and delivering scalable applications.">
+    <meta name="keywords" content="Somdip Roy, Technical Architect, Java Expert, Spring Boot, AWS Solutions Architect, Enterprise Development, DevSecOps, AI Applications, Team Leadership">
+    <meta name="author" content="Somdip Roy">
+    <meta property="og:title" content="About Somdip Roy - Senior Technical Architect">
+    <meta property="og:description" content="Senior Technical Architect with 13+ years of enterprise Java development, AWS cloud architecture, and AI solutions expertise.">
+    <meta property="og:type" content="profile">
+    <meta property="og:url" content="https://somdiproy.com/about">
+    <link rel="canonical" href="https://somdiproy.com/about">
 </head>
 <div th:fragment="content">
     <!-- About Hero -->
@@ -10,7 +18,7 @@
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl md:text-5xl font-bold mb-6">About Me</h1>
             <p class="text-xl text-blue-100 max-w-3xl mx-auto">
-                Passionate Technical Architect with 12+ years of experience building scalable enterprise solutions
+                Passionate Senior Technical Architect with 13+ years of experience building scalable enterprise solutions
             </p>
         </div>
     </section>
@@ -20,22 +28,24 @@
         <div class="max-w-6xl mx-auto px-4">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <div>
-                    <h2 class="text-3xl font-bold text-gray-800 mb-6">My Journey</h2>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">My Professional Journey</h2>
                     <div class="space-y-4 text-gray-600 leading-relaxed">
                         <p>
-                            I'm a Technical Architect with over 12 years of experience in enterprise Java development, 
+                            I'm a Senior Technical Architect with over 13 years of experience in enterprise Java development, 
                             cloud architecture, and security implementation. Currently leading a team of 15+ developers 
                             at United Phosphorous Limited, where I oversee 22+ applications and have achieved significant 
-                            cost savings and performance improvements.
+                            performance improvements and operational excellence.
                         </p>
                         <p>
                             My expertise spans the entire software development lifecycle, from architecture design 
                             to deployment and monitoring. I'm passionate about leveraging cutting-edge technologies 
-                            like AWS cloud services, AI/ML, and modern DevOps practices to solve complex business challenges.
+                            like AWS cloud services, AI/ML, and modern DevOps practices to solve complex business challenges 
+                            and drive digital transformation.
                         </p>
                         <p>
                             I hold AWS Solutions Architect certification and DevSecOps Foundation certification, 
-                            demonstrating my commitment to staying current with industry best practices and emerging technologies.
+                            demonstrating my commitment to staying current with industry best practices and emerging technologies. 
+                            My focus is on building robust, scalable, and secure enterprise solutions that deliver measurable business value.
                         </p>
                     </div>
                 </div>
@@ -47,12 +57,12 @@
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Professional Highlights</h3>
                         <div class="grid grid-cols-2 gap-4 text-center">
                             <div class="bg-white p-4 rounded-lg shadow">
-                                <div class="text-2xl font-bold text-blue-600">12+</div>
+                                <div class="text-2xl font-bold text-blue-600">13+</div>
                                 <div class="text-sm text-gray-600">Years Experience</div>
                             </div>
                             <div class="bg-white p-4 rounded-lg shadow">
-                                <div class="text-2xl font-bold text-green-600">$300K</div>
-                                <div class="text-sm text-gray-600">Annual Savings</div>
+                                <div class="text-2xl font-bold text-green-600">99%</div>
+                                <div class="text-sm text-gray-600">Success Rate</div>
                             </div>
                             <div class="bg-white p-4 rounded-lg shadow">
                                 <div class="text-2xl font-bold text-purple-600">22+</div>
@@ -69,39 +79,185 @@
         </div>
     </section>
 
-    <!-- Skills Section -->
+    <!-- Core Competencies -->
     <section class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Technical Skills</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div th:each="skill : ${skills}" class="bg-white p-6 rounded-xl shadow-lg">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-semibold text-gray-800" th:text="${skill.name}">Skill</h3>
-                        <span class="text-sm font-medium text-blue-600" th:text="${skill.proficiencyLevel}">Level</span>
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Core Technical Competencies</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition-shadow">
+                    <i class="fas fa-code text-blue-600 text-3xl mb-4"></i>
+                    <h3 class="font-semibold text-gray-800 mb-2">Enterprise Development</h3>
+                    <p class="text-sm text-gray-600">Java, Spring Boot, Microservices</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition-shadow">
+                    <i class="fas fa-cloud text-green-600 text-3xl mb-4"></i>
+                    <h3 class="font-semibold text-gray-800 mb-2">Cloud Architecture</h3>
+                    <p class="text-sm text-gray-600">AWS, Docker, Kubernetes</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition-shadow">
+                    <i class="fas fa-shield-alt text-red-600 text-3xl mb-4"></i>
+                    <h3 class="font-semibold text-gray-800 mb-2">Security & DevSecOps</h3>
+                    <p class="text-sm text-gray-600">SAST/DAST, VAPT, Security</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg text-center hover:shadow-xl transition-shadow">
+                    <i class="fas fa-brain text-purple-600 text-3xl mb-4"></i>
+                    <h3 class="font-semibold text-gray-800 mb-2">AI/ML Solutions</h3>
+                    <p class="text-sm text-gray-600">AWS Bedrock, Textract, GenAI</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section - Streamlined -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Technical Skills & Expertise</h2>
+            
+            <!-- Skills Categories -->
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Programming & Frameworks -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
+                    <h3 class="text-xl font-semibold text-blue-800 mb-4 flex items-center">
+                        <i class="fas fa-code mr-3"></i>
+                        Programming & Frameworks
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Java 17</span>
+                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Spring Boot</span>
+                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Microservices</span>
+                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">REST APIs</span>
+                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 95%"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
-                        <div class="skill-bar rounded-full h-2" th:style="'width: ' + ${skill.proficiency} + '%'"></div>
+                </div>
+
+                <!-- Cloud & DevOps -->
+                <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl">
+                    <h3 class="text-xl font-semibold text-green-800 mb-4 flex items-center">
+                        <i class="fas fa-cloud mr-3"></i>
+                        Cloud & DevOps
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">AWS</span>
+                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Docker</span>
+                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Kubernetes</span>
+                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">CI/CD</span>
+                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
                     </div>
-                    <p class="text-sm text-gray-600" th:text="${skill.description}">Description</p>
-                    <span class="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs mt-2" th:text="${skill.category}">Category</span>
+                </div>
+
+                <!-- Security & AI -->
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-4 flex items-center">
+                        <i class="fas fa-shield-alt mr-3"></i>
+                        Security & AI
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">DevSecOps</span>
+                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                <div class="bg-purple-600 h-2 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">SAST/DAST</span>
+                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                <div class="bg-purple-600 h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">AWS Bedrock</span>
+                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                <div class="bg-purple-600 h-2 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">AI/ML</span>
+                            <div class="w-24 bg-gray-200 rounded-full h-2">
+                                <div class="bg-purple-600 h-2 rounded-full" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Certifications -->
-    <section class="py-16 bg-white">
+    <section class="py-16 bg-gray-50">
         <div class="max-w-6xl mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Professional Certifications</h2>
             <div class="grid md:grid-cols-2 gap-6">
-                <div th:each="cert : ${certifications}" class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200">
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200 hover:shadow-lg transition-shadow">
                     <div class="flex items-start">
                         <i class="fas fa-certificate text-blue-600 text-2xl mr-4 mt-1"></i>
                         <div>
-                            <h3 class="font-semibold text-gray-800" th:text="${cert}">Certification</h3>
+                            <h3 class="font-semibold text-gray-800 mb-2">AWS Solutions Architect Associate</h3>
+                            <p class="text-sm text-gray-600">Amazon Web Services</p>
                         </div>
                     </div>
                 </div>
+                <div class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200 hover:shadow-lg transition-shadow">
+                    <div class="flex items-start">
+                        <i class="fas fa-certificate text-green-600 text-2xl mr-4 mt-1"></i>
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">DevSecOps Foundation</h3>
+                            <p class="text-sm text-gray-600">Security and DevOps Integration</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Philosophy -->
+    <section class="py-16 bg-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8">Professional Philosophy</h2>
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-2xl">
+                <blockquote class="text-xl text-gray-700 italic leading-relaxed">
+                    "Technology is only as powerful as the problems it solves. My mission is to architect solutions 
+                    that not only meet today's requirements but also anticipate tomorrow's challenges, ensuring 
+                    scalability, security, and sustainable growth for every organization I work with."
+                </blockquote>
+                <cite class="block mt-4 text-blue-600 font-semibold">- Somdip Roy</cite>
             </div>
         </div>
     </section>

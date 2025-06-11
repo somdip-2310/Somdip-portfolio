@@ -13,11 +13,11 @@ public class ProjectController {
 
     @GetMapping
     public String projects(Model model) {
-        model.addAttribute("title", "Projects & Portfolio - Somdip Roy");
-        model.addAttribute("description", "Explore my professional projects, open source contributions, and technical implementations across enterprise development, cloud architecture, and security.");
+        model.addAttribute("title", "Projects & Portfolio - Somdip Roy | 13+ Years Experience");
+        model.addAttribute("description", "Explore Somdip Roy's professional projects, open source contributions, and technical implementations across enterprise development, cloud architecture, and AI/ML solutions spanning 13+ years of experience.");
         model.addAttribute("currentPage", "projects");
         
-        // Professional Projects
+        // Professional Projects - Updated to reflect 13+ years experience and removed cost savings
         List<Map<String, Object>> projects = Arrays.asList(
             createProject(
                 "enterprise-migration",
@@ -32,7 +32,7 @@ public class ProjectController {
                     "Migrated 6 Oracle servers to AWS within one month",
                     "Implemented CI/CD pipelines with GitHub Actions", 
                     "Achieved 99.9% uptime post-migration",
-                    "Reduced infrastructure costs by $300K annually"
+                    "Enhanced system scalability and performance"
                 ),
                 "fas fa-cloud-upload-alt",
                 "blue"
@@ -40,7 +40,7 @@ public class ProjectController {
             createProject(
                 "sso-implementation",
                 "Single Sign-On Implementation",
-                "Implemented enterprise SSO solution migrating from Okta to Microsoft Entra, serving 1000+ users across multiple applications",
+                "Implemented enterprise SSO solution migrating from Okta to Microsoft Entra, serving 18,000+ users across multiple applications",
                 "Security & Identity",
                 "completed", 
                 "4 months",
@@ -49,8 +49,8 @@ public class ProjectController {
                 Arrays.asList(
                     "Seamless migration with zero downtime",
                     "Improved security with MFA integration",
-                    "Reduced license costs significantly",
-                    "Enhanced user experience across applications"
+                    "Enhanced user experience across applications",
+                    "Achieved enterprise-grade identity management"
                 ),
                 "fas fa-shield-alt",
                 "green"
@@ -72,6 +72,24 @@ public class ProjectController {
                 ),
                 "fas fa-broadcast-tower",
                 "purple"
+            ),
+            createProject(
+                "ai-hr-screening",
+                "AI-Powered HR Resume Screening",
+                "Built enterprise AI solution using AWS S3, Amazon Textract, and Amazon Bedrock for intelligent resume processing and candidate matching",
+                "AI/ML Solutions",
+                "live",
+                "3 months",
+                "5 developers",
+                Arrays.asList("AWS S3", "Amazon Textract", "Amazon Bedrock", "Spring Boot", "GenAI"),
+                Arrays.asList(
+                    "90% faster resume processing with AI",
+                    "85% accuracy in candidate matching",
+                    "Secure document handling with AWS S3",
+                    "Real-time GenAI analysis with Bedrock"
+                ),
+                "fas fa-brain",
+                "indigo"
             ),
             createProject(
                 "security-automation",
@@ -108,46 +126,29 @@ public class ProjectController {
                 ),
                 "fas fa-project-diagram",
                 "orange"
-            ),
-            createProject(
-                "ai-portfolio-system",
-                "AI-Powered Portfolio System",
-                "This portfolio website featuring AI demos, responsive design, and modern cloud deployment architecture",
-                "Personal Project",
-                "completed",
-                "2 months",
-                "Solo project",
-                Arrays.asList("Spring Boot", "Thymeleaf", "AWS", "Docker", "GitHub Actions", "Tailwind CSS"),
-                Arrays.asList(
-                    "Modern responsive design with Tailwind CSS",
-                    "Live AI demonstrations with AWS integration",
-                    "Production-ready CI/CD pipeline",
-                    "SEO optimized with comprehensive analytics"
-                ),
-                "fas fa-laptop-code",
-                "indigo"
             )
         );
         
         model.addAttribute("projects", projects);
         
-        // Project categories for filtering
+        // Project categories for filtering - Updated
         model.addAttribute("categories", Arrays.asList(
             "All Projects",
             "Cloud Architecture", 
             "Security & Identity",
             "Telecommunications",
+            "AI/ML Solutions",
             "DevSecOps",
-            "System Architecture",
-            "Personal Project"
+            "System Architecture"
         ));
         
-        // Technology stats
+        // Technology stats - Updated to reflect 13+ years
         Map<String, Object> techStats = new HashMap<>();
         techStats.put("totalProjects", projects.size());
         techStats.put("completedProjects", (int) projects.stream().mapToLong(p -> "completed".equals(p.get("status")) ? 1 : 0).sum());
-        techStats.put("technologiesUsed", 25);
-        techStats.put("teamMembers", "50+");
+        techStats.put("technologiesUsed", 30);
+        techStats.put("teamMembers", "60+");
+        techStats.put("yearsExperience", "13+");
         model.addAttribute("techStats", techStats);
         
         return "projects/index";

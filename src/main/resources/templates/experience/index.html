@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title}">Professional Experience - Somdip Roy</title>
-    <meta name="description" th:content="${description}">
+    <title th:text="${title}">Professional Experience - Somdip Roy | 13+ Years Technical Architect</title>
+    <meta name="description" content="Explore Somdip Roy's 13+ years of professional experience as a Technical Architect, including roles at UPL, Jio, and other leading organizations. Expertise in Java, Spring Boot, AWS, and enterprise solutions.">
+    <meta name="keywords" content="Somdip Roy Experience, Technical Architect Career, Java Developer Experience, AWS Solutions Architect, Enterprise Applications, DevSecOps Experience, Team Leadership">
+    <meta name="author" content="Somdip Roy">
+    <meta property="og:title" content="Professional Experience - Somdip Roy Technical Architect">
+    <meta property="og:description" content="13+ years of experience in technical architecture, Java development, AWS cloud solutions, and team leadership across telecommunications, manufacturing, and IT services.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://somdiproy.com/experience">
+    <link rel="canonical" href="https://somdiproy.com/experience">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -47,6 +54,29 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
+
+        /* Career Journey Diagram Styles */
+        .journey-path {
+            stroke: url(#gradient);
+            stroke-width: 4;
+            fill: none;
+            stroke-dasharray: 10;
+            animation: dash 20s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -200;
+            }
+        }
+
+        .milestone-node {
+            transition: all 0.3s ease;
+        }
+
+        .milestone-node:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -57,7 +87,7 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <a href="/" class="text-xl font-bold text-gray-800">Somdip Roy</a>
-                    <span class="ml-3 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Technical Architect</span>
+                    <span class="ml-3 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Senior Technical Architect</span>
                 </div>
                 <div class="flex items-center space-x-8">
                     <a href="/" class="text-gray-600 hover:text-blue-600">Home</a>
@@ -72,9 +102,9 @@
     <!-- Hero Section -->
     <div class="gradient-bg text-white py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-5xl font-bold mb-6">Technical Architect & Team Leader</h1>
+            <h1 class="text-5xl font-bold mb-6">Senior Technical Architect & Team Leader</h1>
             <p class="text-xl text-blue-100 max-w-4xl mx-auto mb-8">
-                12+ years of experience in application development, security, cloud infrastructure, 
+                13+ years of experience in application development, security, cloud infrastructure, 
                 and team leadership across telecommunications, manufacturing, and IT services.
             </p>
             <div class="flex justify-center space-x-4">
@@ -90,7 +120,7 @@
             <div class="bg-white rounded-2xl shadow-xl p-8">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                     <div>
-                        <div class="text-3xl font-bold text-blue-600" th:text="${experienceStats.totalExperience}">12+ years</div>
+                        <div class="text-3xl font-bold text-blue-600" th:text="${experienceStats.totalExperience}">13+ years</div>
                         <div class="text-gray-600 mt-2">Total Experience</div>
                     </div>
                     <div>
@@ -115,9 +145,29 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Core Competencies</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div th:each="competency : ${coreCompetencies}" 
-                     class="competency-card bg-white rounded-xl p-6 text-center shadow-md">
-                    <div class="text-lg font-semibold text-gray-800" th:text="${competency}">Competency</div>
+                <div class="competency-card bg-white rounded-xl p-6 text-center shadow-md">
+                    <div class="text-lg font-semibold text-gray-800">Enterprise Architecture</div>
+                </div>
+                <div class="competency-card bg-white rounded-xl p-6 text-center shadow-md">
+                    <div class="text-lg font-semibold text-gray-800">Cloud Migration</div>
+                </div>
+                <div class="competency-card bg-white rounded-xl p-6 text-center shadow-md">
+                    <div class="text-lg font-semibold text-gray-800">DevSecOps Implementation</div>
+                </div>
+                <div class="competency-card bg-white rounded-xl p-6 text-center shadow-md">
+                    <div class="text-lg font-semibold text-gray-800">Team Leadership</div>
+                </div>
+                <div class="competency-card bg-white rounded-xl p-6 text-center shadow-md">
+                    <div class="text-lg font-semibold text-gray-800">Java Spring Development</div>
+                </div>
+                <div class="competency-card bg-white rounded-xl p-6 text-center shadow-md">
+                    <div class="text-lg font-semibold text-gray-800">AI/ML Integration</div>
+                </div>
+                <div class="competency-card bg-white rounded-xl p-6 text-center shadow-md">
+                    <div class="text-lg font-semibold text-gray-800">Security Implementation</div>
+                </div>
+                <div class="competency-card bg-white rounded-xl p-6 text-center shadow-md">
+                    <div class="text-lg font-semibold text-gray-800">Performance Optimization</div>
                 </div>
             </div>
         </div>
@@ -235,16 +285,100 @@
         </div>
     </div>
 
-    <!-- Career Milestones -->
+    <!-- Career Journey Diagram -->
     <div class="py-16">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Career Milestones</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div th:each="milestone : ${careerMilestones}" 
-                     class="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
-                    <div class="text-3xl font-bold text-blue-600 mb-2" th:text="${milestone.year}">Year</div>
-                    <div class="text-xl font-semibold text-gray-800 mb-2" th:text="${milestone.title}">Title</div>
-                    <div class="text-gray-600" th:text="${milestone.description}">Description</div>
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Career Milestones Journey</h2>
+            
+            <!-- SVG Career Journey Diagram -->
+            <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl">
+                <svg viewBox="0 0 800 400" class="w-full h-auto">
+                    <!-- Gradient Definition -->
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                            <stop offset="25%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#06b6d4;stop-opacity:1" />
+                            <stop offset="75%" style="stop-color:#10b981;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Journey Path -->
+                    <path class="journey-path" d="M 50 300 Q 200 200 350 250 Q 500 300 650 200 Q 750 150 750 100" />
+                    
+                    <!-- Milestone Nodes -->
+                    <!-- 2012 - Started Career -->
+                    <g class="milestone-node cursor-pointer" transform="translate(50, 300)">
+                        <circle r="15" fill="#3b82f6" stroke="#fff" stroke-width="3"/>
+                        <text x="0" y="-25" text-anchor="middle" class="text-sm font-semibold fill-gray-800">2012</text>
+                        <text x="0" y="-10" text-anchor="middle" class="text-xs fill-gray-600">Started</text>
+                        <text x="0" y="35" text-anchor="middle" class="text-xs fill-gray-600">Junior Developer</text>
+                    </g>
+                    
+                    <!-- 2015 - First Leadership -->
+                    <g class="milestone-node cursor-pointer" transform="translate(250, 225)">
+                        <circle r="15" fill="#8b5cf6" stroke="#fff" stroke-width="3"/>
+                        <text x="0" y="-25" text-anchor="middle" class="text-sm font-semibold fill-gray-800">2015</text>
+                        <text x="0" y="-10" text-anchor="middle" class="text-xs fill-gray-600">Leadership</text>
+                        <text x="0" y="35" text-anchor="middle" class="text-xs fill-gray-600">Team Lead</text>
+                    </g>
+                    
+                    <!-- 2018 - AWS Certification -->
+                    <g class="milestone-node cursor-pointer" transform="translate(400, 275)">
+                        <circle r="15" fill="#06b6d4" stroke="#fff" stroke-width="3"/>
+                        <text x="0" y="-25" text-anchor="middle" class="text-sm font-semibold fill-gray-800">2018</text>
+                        <text x="0" y="-10" text-anchor="middle" class="text-xs fill-gray-600">AWS Certified</text>
+                        <text x="0" y="35" text-anchor="middle" class="text-xs fill-gray-600">Cloud Expert</text>
+                    </g>
+                    
+                    <!-- 2020 - Senior Architect -->
+                    <g class="milestone-node cursor-pointer" transform="translate(550, 225)">
+                        <circle r="15" fill="#10b981" stroke="#fff" stroke-width="3"/>
+                        <text x="0" y="-25" text-anchor="middle" class="text-sm font-semibold fill-gray-800">2020</text>
+                        <text x="0" y="-10" text-anchor="middle" class="text-xs fill-gray-600">Senior Role</text>
+                        <text x="0" y="35" text-anchor="middle" class="text-xs fill-gray-600">Architect</text>
+                    </g>
+                    
+                    <!-- 2022 - Technical Architect -->
+                    <g class="milestone-node cursor-pointer" transform="translate(650, 175)">
+                        <circle r="15" fill="#f59e0b" stroke="#fff" stroke-width="3"/>
+                        <text x="0" y="-25" text-anchor="middle" class="text-sm font-semibold fill-gray-800">2022</text>
+                        <text x="0" y="-10" text-anchor="middle" class="text-xs fill-gray-600">Technical</text>
+                        <text x="0" y="35" text-anchor="middle" class="text-xs fill-gray-600">Architect</text>
+                    </g>
+                    
+                    <!-- 2025 - Present -->
+                    <g class="milestone-node cursor-pointer" transform="translate(750, 100)">
+                        <circle r="18" fill="#ef4444" stroke="#fff" stroke-width="3"/>
+                        <text x="0" y="-30" text-anchor="middle" class="text-sm font-bold fill-gray-800">2025</text>
+                        <text x="0" y="-15" text-anchor="middle" class="text-xs fill-gray-600">Present</text>
+                        <text x="0" y="40" text-anchor="middle" class="text-xs fill-gray-600">AI/GenAI Expert</text>
+                    </g>
+                </svg>
+                
+                <!-- Journey Statistics -->
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-8">
+                    <div class="bg-white p-4 rounded-lg shadow text-center">
+                        <div class="text-2xl font-bold text-blue-600">13+</div>
+                        <div class="text-sm text-gray-600">Years Journey</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow text-center">
+                        <div class="text-2xl font-bold text-purple-600">5</div>
+                        <div class="text-sm text-gray-600">Major Roles</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow text-center">
+                        <div class="text-2xl font-bold text-green-600">30+</div>
+                        <div class="text-sm text-gray-600">Projects</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow text-center">
+                        <div class="text-2xl font-bold text-orange-600">15+</div>
+                        <div class="text-sm text-gray-600">Team Members</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow text-center">
+                        <div class="text-2xl font-bold text-red-600">99%</div>
+                        <div class="text-sm text-gray-600">Success Rate</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -256,7 +390,7 @@
             <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Certifications & Awards</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div th:each="cert : ${certifications}" 
-                     class="bg-white rounded-xl shadow-lg p-6 flex items-center space-x-4">
+                     class="bg-white rounded-xl shadow-lg p-6 flex items-center space-x-4 hover:shadow-xl transition-shadow">
                     <div class="flex-shrink-0">
                         <i class="fas fa-certificate text-3xl text-blue-600"></i>
                     </div>
@@ -275,7 +409,7 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-4xl font-bold text-white mb-6">Ready to Collaborate?</h2>
             <p class="text-xl text-blue-100 mb-8">
-                Let's discuss how my expertise in technical architecture, security, and team leadership 
+                Let's discuss how my 13+ years of expertise in technical architecture, security, and team leadership 
                 can contribute to your organization's success.
             </p>
             <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -295,9 +429,9 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                 <div>
                     <h3 class="text-xl font-bold mb-4">Somdip Roy</h3>
-                    <p class="text-gray-300 mb-4">Technical Architect with 12+ years of experience in enterprise applications, cloud infrastructure, and security implementations.</p>
+                    <p class="text-gray-300 mb-4">Senior Technical Architect with 13+ years of experience in enterprise applications, cloud infrastructure, and security implementations.</p>
                     <div class="flex space-x-4">
-                        <a href="https://linkedin.com/in/somdiproy" class="text-gray-300 hover:text-blue-400 transition-colors">
+                        <a href="https://www.linkedin.com/in/somdip-roy-b8004b111/" class="text-gray-300 hover:text-blue-400 transition-colors">
                             <i class="fab fa-linkedin text-xl"></i>
                         </a>
                         <a href="https://stackoverflow.com/users/19612248/somdip-roy" class="text-gray-300 hover:text-orange-400 transition-colors">
@@ -324,12 +458,12 @@
                         <li class="text-gray-300">Cloud Migration (AWS)</li>
                         <li class="text-gray-300">DevSecOps & Security</li>
                         <li class="text-gray-300">Team Leadership</li>
-                        <li class="text-gray-300">5G Infrastructure</li>
+                        <li class="text-gray-300">AI/ML Integration</li>
                     </ul>
                 </div>
             </div>
             <div class="border-t border-gray-700 pt-6 text-center">
-                <p class="text-gray-400">&copy; 2025 Somdip Roy. All rights reserved. | Mumbai, India | +91 9004233112</p>
+                <p class="text-gray-400">&copy; 2025 Somdip Roy. All rights reserved. | Mumbai, India</p>
             </div>
         </div>
     </footer>

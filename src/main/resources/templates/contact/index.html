@@ -2,7 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/layout :: layout(${title}, ~{::content})}">
 <head>
-    <title th:text="${title}">Contact Somdip Roy - Technical Architect</title>
+    <title th:text="${title}">Contact Somdip Roy - Senior Technical Architect | Get in Touch</title>
+    <meta name="description" content="Contact Somdip Roy, Senior Technical Architect with 13+ years experience. Discuss your Java, Spring Boot, AWS cloud, and AI/ML project requirements. Based in Mumbai, India.">
+    <meta name="keywords" content="Contact Somdip Roy, Technical Architect Contact, Java Developer Mumbai, AWS Solutions Architect Contact, Enterprise Development Consultation, AI Project Discussion">
+    <meta name="author" content="Somdip Roy">
+    <meta property="og:title" content="Contact Somdip Roy - Senior Technical Architect">
+    <meta property="og:description" content="Get in touch with Somdip Roy for technical architecture consultation, Java development, AWS cloud solutions, and AI/ML project discussions.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://somdiproy.com/contact">
+    <link rel="canonical" href="https://somdiproy.com/contact">
 </head>
 <div th:fragment="content">
     <!-- Contact Hero -->
@@ -60,18 +68,6 @@
                         </div>
 
                         <div class="flex items-center">
-                            <div class="bg-green-100 p-3 rounded-full mr-4">
-                                <i class="fas fa-phone text-green-600 text-xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold text-gray-800">Phone</h3>
-                                <a href="tel:+919004233112" class="text-green-600 hover:text-green-800">
-                                    +91 9004233112
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
                             <div class="bg-purple-100 p-3 rounded-full mr-4">
                                 <i class="fas fa-map-marker-alt text-purple-600 text-xl"></i>
                             </div>
@@ -87,9 +83,9 @@
                             </div>
                             <div>
                                 <h3 class="font-semibold text-gray-800">LinkedIn</h3>
-                                <a href="https://linkedin.com/in/somdip-roy" target="_blank" 
+                                <a href="https://www.linkedin.com/in/somdip-roy-b8004b111/" target="_blank" 
                                    class="text-yellow-600 hover:text-yellow-800">
-                                    linkedin.com/in/somdip-roy
+                                    linkedin.com/in/somdip-roy-b8004b111
                                 </a>
                             </div>
                         </div>
@@ -99,9 +95,40 @@
                     <div class="bg-blue-50 p-6 rounded-xl">
                         <h3 class="font-semibold text-gray-800 mb-2">Response Time</h3>
                         <p class="text-gray-600">
-                            I typically respond to all inquiries within 24 hours. For urgent matters, 
-                            feel free to call me directly.
+                            I typically respond to all inquiries within 24 hours. For urgent technical discussions, 
+                            feel free to reach out via LinkedIn or email directly.
                         </p>
+                    </div>
+
+                    <!-- Consultation Areas -->
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-xl">
+                        <h3 class="font-semibold text-gray-800 mb-4">Consultation Areas</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-sm text-gray-700">Enterprise Architecture</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-sm text-gray-700">AWS Cloud Migration</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-sm text-gray-700">Java Spring Development</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-sm text-gray-700">AI/ML Integration</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-sm text-gray-700">DevSecOps Implementation</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span class="text-sm text-gray-700">Team Leadership</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -137,75 +164,14 @@
                             </div>
                         </div>
 
-                        <!-- Company and Phone Row -->
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="company" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Company
-                                </label>
-                                <input type="text" th:field="*{company}" id="company" 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       placeholder="Your company name">
-                            </div>
-                            
-                            <div>
-                                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Phone
-                                </label>
-                                <input type="tel" th:field="*{phone}" id="phone" 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       placeholder="+1 (555) 123-4567">
-                            </div>
-                        </div>
-
-                        <!-- Project Details Row -->
-                        <div class="grid md:grid-cols-3 gap-4">
-                            <div>
-                                <label for="projectType" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Project Type
-                                </label>
-                                <select th:field="*{projectType}" id="projectType" 
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="">Select type</option>
-                                    <option value="enterprise-development">Enterprise Development</option>
-                                    <option value="cloud-migration">Cloud Migration</option>
-                                    <option value="ai-integration">AI Integration</option>
-                                    <option value="security-audit">Security Audit</option>
-                                    <option value="consultation">Technical Consultation</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label for="timeline" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Timeline
-                                </label>
-                                <select th:field="*{timeline}" id="timeline" 
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="">Select timeline</option>
-                                    <option value="immediate">Immediate (< 1 month)</option>
-                                    <option value="short-term">Short-term (1-3 months)</option>
-                                    <option value="medium-term">Medium-term (3-6 months)</option>
-                                    <option value="long-term">Long-term (6+ months)</option>
-                                    <option value="ongoing">Ongoing support</option>
-                                </select>
-                            </div>
-                            
-                            <div>
-                                <label for="budget" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Budget Range
-                                </label>
-                                <select th:field="*{budget}" id="budget" 
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="">Select range</option>
-                                    <option value="under-10k">Under $10K</option>
-                                    <option value="10k-25k">$10K - $25K</option>
-                                    <option value="25k-50k">$25K - $50K</option>
-                                    <option value="50k-100k">$50K - $100K</option>
-                                    <option value="over-100k">Over $100K</option>
-                                    <option value="discuss">Let's discuss</option>
-                                </select>
-                            </div>
+                        <!-- Company -->
+                        <div>
+                            <label for="company" class="block text-sm font-medium text-gray-700 mb-2">
+                                Company / Organization
+                            </label>
+                            <input type="text" th:field="*{company}" id="company" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="Your company or organization name">
                         </div>
 
                         <!-- Subject -->
@@ -250,7 +216,7 @@
     <!-- Why Work With Me -->
     <section class="py-16 bg-white">
         <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Why Work With Me?</h2>
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Why Choose My Expertise?</h2>
             
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="text-center">
@@ -259,8 +225,8 @@
                     </div>
                     <h3 class="text-xl font-semibold mb-3 text-gray-800">Proven Expertise</h3>
                     <p class="text-gray-600">
-                        12+ years of hands-on experience with enterprise-grade solutions, 
-                        AWS certified, and a track record of successful project deliveries.
+                        13+ years of hands-on experience with enterprise-grade solutions, 
+                        AWS certified, and a track record of successful project deliveries across multiple industries.
                     </p>
                 </div>
                 
@@ -268,10 +234,10 @@
                     <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-rocket text-green-600 text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Results-Driven</h3>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Results-Driven Approach</h3>
                     <p class="text-gray-600">
                         Focused on delivering measurable business value. I've helped companies 
-                        save $300K+ annually and improve operational efficiency by 90%.
+                        achieve 90% operational efficiency improvements and 15% cost reductions.
                     </p>
                 </div>
                 
@@ -279,11 +245,44 @@
                     <div class="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-handshake text-purple-600 text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Collaborative Approach</h3>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-800">Collaborative Partnership</h3>
                     <p class="text-gray-600">
                         I believe in transparent communication, regular updates, and working 
-                        closely with your team to ensure project success.
+                        closely with your team to ensure project success and knowledge transfer.
                     </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Expertise Showcase -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Ready to Discuss These Technologies?</h2>
+            
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow text-center hover:shadow-lg transition-shadow">
+                    <i class="fab fa-java text-orange-600 text-3xl mb-3"></i>
+                    <h3 class="font-semibold text-gray-800">Java & Spring</h3>
+                    <p class="text-sm text-gray-600 mt-2">Enterprise Development</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow text-center hover:shadow-lg transition-shadow">
+                    <i class="fab fa-aws text-orange-500 text-3xl mb-3"></i>
+                    <h3 class="font-semibold text-gray-800">AWS Cloud</h3>
+                    <p class="text-sm text-gray-600 mt-2">Cloud Architecture</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow text-center hover:shadow-lg transition-shadow">
+                    <i class="fas fa-brain text-purple-600 text-3xl mb-3"></i>
+                    <h3 class="font-semibold text-gray-800">AI/ML</h3>
+                    <p class="text-sm text-gray-600 mt-2">GenAI & Bedrock</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow text-center hover:shadow-lg transition-shadow">
+                    <i class="fas fa-shield-alt text-red-600 text-3xl mb-3"></i>
+                    <h3 class="font-semibold text-gray-800">Security</h3>
+                    <p class="text-sm text-gray-600 mt-2">DevSecOps & VAPT</p>
                 </div>
             </div>
         </div>

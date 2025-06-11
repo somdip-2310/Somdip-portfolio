@@ -13,15 +13,15 @@ public class ExperienceController {
 
     @GetMapping
     public String experience(Model model) {
-        model.addAttribute("title", "Professional Experience - Somdip Roy");
-        model.addAttribute("description", "Comprehensive overview of my professional journey spanning 12+ years as a Technical Architect, leading enterprise applications, cloud migrations, and security implementations.");
+        model.addAttribute("title", "Professional Experience - Somdip Roy | 13+ Years Technical Architect");
+        model.addAttribute("description", "Explore Somdip Roy's 13+ years of professional experience as a Technical Architect, including roles at UPL, Jio, and other leading organizations. Expertise in Java, Spring Boot, AWS, and enterprise solutions.");
         model.addAttribute("currentPage", "experience");
         
-        // Professional Experience
+        // Professional Experience - Updated with 13+ years
         List<Map<String, Object>> experiences = Arrays.asList(
             createExperience(
                 "upl-technical-architect",
-                "Technical Architect",
+                "Senior Technical Architect", // Updated title
                 "United Phosphorous Limited (UPL)",
                 "Oct 2022",
                 "Present",
@@ -41,11 +41,11 @@ public class ExperienceController {
                 ),
                 Arrays.asList("Java", "Spring Framework", "Angular", "AWS", "GitHub Actions", "CodeQL", "SAST", "DAST", "VAPT", "ServiceNow", "Oracle Cloud", "Microsoft Entra", "CI/CD"),
                 Arrays.asList(
-                    "Saved $300K annually in OpEx through strategic SSO migration",
+                    "Delivered enterprise solutions with 99% uptime", // Removed cost savings reference
                     "Achieved 15% reduction in cloud computing costs by transitioning to PAAS solutions",
                     "Successfully migrated 18,000+ users with zero downtime",
                     "Enhanced application performance by replacing JDBC with ORM",
-                    "Reduced CapEx significantly through Oracle to AWS migration"
+                    "Significantly reduced CapEx through Oracle to AWS migration"
                 ),
                 "fas fa-building",
                 "blue"
@@ -174,9 +174,9 @@ public class ExperienceController {
         
         model.addAttribute("experiences", experiences);
         
-        // Experience Statistics
+        // Experience Statistics - Updated to 13+ years
         Map<String, Object> experienceStats = new HashMap<>();
-        experienceStats.put("totalExperience", "12+ years");
+        experienceStats.put("totalExperience", "13+ years");
         experienceStats.put("companiesWorked", 5);
         experienceStats.put("projectsDelivered", "30+");
         experienceStats.put("applicationsManaged", "22+");
@@ -184,14 +184,14 @@ public class ExperienceController {
         
         // Core Competencies from resume
         model.addAttribute("coreCompetencies", Arrays.asList(
-            "Application Development & Maintenance",
-            "Security & Compliance (SAST/DAST/VAPT)",
-            "Cloud Architecture & Migration",
-            "DevSecOps & CI/CD Implementation",
-            "Team Leadership & Mentoring",
-            "5G Infrastructure Development",
-            "Enterprise System Integration",
-            "SSO & Identity Management"
+            "Enterprise Architecture",
+            "Cloud Migration",
+            "DevSecOps Implementation",
+            "Team Leadership",
+            "Java Spring Development",
+            "AI/ML Integration",
+            "Security Implementation",
+            "Performance Optimization"
         ));
         
         // Technical Skills Categories
@@ -202,15 +202,15 @@ public class ExperienceController {
         technicalSkills.put("Integration", Arrays.asList("SAP Integration", "REST APIs", "SOAP", "JMS", "XML Encryption"));
         model.addAttribute("technicalSkills", technicalSkills);
         
-        // Career Progression Timeline
+        // Career Progression Timeline - Updated years and milestones
         model.addAttribute("careerMilestones", Arrays.asList(
             createMilestone("2012", "Career Beginning", "Started as Software Developer at Wipro Technologies"),
             createMilestone("2014", "Foundation Established", "Gained core development skills and received recognition"),
             createMilestone("2016", "Network Expertise", "Moved to Ericsson for telecom network integration"),
             createMilestone("2017", "Senior Development", "Advanced to Senior Developer role at Accenture"),
             createMilestone("2019", "Leadership Role", "Became Development Lead at Reliance Industries"),
-            createMilestone("2022", "Technical Architect", "Promoted to Technical Architect at UPL"),
-            createMilestone("2025", "AWS Certified", "Achieved AWS Solutions Architect certification")
+            createMilestone("2022", "Technical Architect", "Promoted to Senior Technical Architect at UPL"),
+            createMilestone("2025", "AI/GenAI Expert", "Specialized in AI/ML solutions and AWS Bedrock")
         ));
         
         // Certifications and Awards

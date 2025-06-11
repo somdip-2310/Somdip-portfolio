@@ -2,7 +2,6 @@ package com.somdiproy.portfolio.controller;
 
 import com.somdiproy.portfolio.model.ContactForm;
 import com.somdiproy.portfolio.service.EmailService;
-import com.somdiproy.portfolio.service.ExperienceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,16 +22,16 @@ public class ContactController {
 
     @GetMapping
     public String contact(Model model) {
-        model.addAttribute("title", "Contact Somdip Roy - Technical Architect");
-        model.addAttribute("description", "Get in touch to discuss your next project, technical consultation, or collaboration opportunities.");
+        model.addAttribute("title", "Contact Somdip Roy - Senior Technical Architect | Get in Touch");
+        model.addAttribute("description", "Contact Somdip Roy, Senior Technical Architect with 13+ years experience. Discuss your Java, Spring Boot, AWS cloud, and AI/ML project requirements. Based in Mumbai, India.");
         model.addAttribute("currentPage", "contact");
         model.addAttribute("contactForm", new ContactForm());
         
-        // Add contact information
+        // Updated contact information - removed phone, updated LinkedIn
         model.addAttribute("email", "somdiproy.roy@gmail.com");
-        model.addAttribute("phone", "+91 9004233112");
+        // Removed phone number
         model.addAttribute("location", "Mumbai, India");
-        model.addAttribute("linkedin", "https://linkedin.com/in/somdip-roy");
+        model.addAttribute("linkedin", "https://www.linkedin.com/in/somdip-roy-b8004b111/");
         
         return "contact/index";
     }
@@ -45,15 +44,14 @@ public class ContactController {
         
         // If validation errors, return to form
         if (bindingResult.hasErrors()) {
-            model.addAttribute("title", "Contact Somdip Roy - Technical Architect");
-            model.addAttribute("description", "Get in touch to discuss your next project, technical consultation, or collaboration opportunities.");
+            model.addAttribute("title", "Contact Somdip Roy - Senior Technical Architect | Get in Touch");
+            model.addAttribute("description", "Contact Somdip Roy, Senior Technical Architect with 13+ years experience. Discuss your Java, Spring Boot, AWS cloud, and AI/ML project requirements. Based in Mumbai, India.");
             model.addAttribute("currentPage", "contact");
             
-            // Re-add contact information for the form
+            // Re-add contact information for the form - updated
             model.addAttribute("email", "somdiproy.roy@gmail.com");
-            model.addAttribute("phone", "+91 9004233112");
             model.addAttribute("location", "Mumbai, India");
-            model.addAttribute("linkedin", "https://linkedin.com/in/somdip-roy");
+            model.addAttribute("linkedin", "https://www.linkedin.com/in/somdip-roy-b8004b111/");
             
             return "contact/index";
         }
@@ -82,15 +80,14 @@ public class ContactController {
             
             model.addAttribute("errorMessage", 
                 "Sorry, there was an error sending your message. Please try again or email me directly at somdiproy.roy@gmail.com");
-            model.addAttribute("title", "Contact Somdip Roy - Technical Architect");
-            model.addAttribute("description", "Get in touch to discuss your next project, technical consultation, or collaboration opportunities.");
+            model.addAttribute("title", "Contact Somdip Roy - Senior Technical Architect | Get in Touch");
+            model.addAttribute("description", "Contact Somdip Roy, Senior Technical Architect with 13+ years experience. Discuss your Java, Spring Boot, AWS cloud, and AI/ML project requirements. Based in Mumbai, India.");
             model.addAttribute("currentPage", "contact");
             
-            // Re-add contact information
+            // Re-add contact information - updated
             model.addAttribute("email", "somdiproy.roy@gmail.com");
-            model.addAttribute("phone", "+91 9004233112");
             model.addAttribute("location", "Mumbai, India");
-            model.addAttribute("linkedin", "https://linkedin.com/in/somdip-roy");
+            model.addAttribute("linkedin", "https://www.linkedin.com/in/somdip-roy-b8004b111/");
             
             return "contact/index";
         }
@@ -98,16 +95,14 @@ public class ContactController {
     
     /**
      * Log contact form submission for debugging and local testing
+     * Updated to remove fields that are no longer in the form
      */
     private void logContactSubmission(ContactForm contactForm) {
         System.out.println("=== CONTACT FORM SUBMISSION ===");
         System.out.println("Name: " + contactForm.getName());
         System.out.println("Email: " + contactForm.getEmail());
         System.out.println("Company: " + contactForm.getCompany());
-        System.out.println("Phone: " + contactForm.getPhone());
-        System.out.println("Project Type: " + contactForm.getProjectType());
-        System.out.println("Timeline: " + contactForm.getTimeline());
-        System.out.println("Budget: " + contactForm.getBudget());
+        // Removed phone, projectType, timeline, budget logging
         System.out.println("Subject: " + contactForm.getSubject());
         System.out.println("Message: " + contactForm.getMessage());
         System.out.println("===============================");
