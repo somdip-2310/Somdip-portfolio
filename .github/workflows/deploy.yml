@@ -1,6 +1,5 @@
 # .github/workflows/deploy.yml
-# Complete working workflow for Portfolio Service
-
+# Diagnostic version to identify and fix the container name issue
 
 name: Deploy Portfolio to AWS ECS
 
@@ -16,7 +15,7 @@ env:
   ECS_SERVICE: somdip-portfolio-service
   ECS_CLUSTER: somdip-dev-cluster
   ECS_TASK_DEFINITION: somdip-portfolio
-  CONTAINER_NAME: portfolio-container  # ✅ CORRECT container name confirmed
+  CONTAINER_NAME: portfolio-container
 
 jobs:
   deploy:
@@ -79,30 +78,82 @@ jobs:
         # Output the image URI
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    - name: Download current task definition
+    - name: Download and analyze task definition
       run: |
+        echo "=== Downloading task definition ==="
         aws ecs describe-task-definition \
           --task-definition ${{ env.ECS_TASK_DEFINITION }} \
-          --query taskDefinition > task-definition.json
+          --query taskDefinition > task-definition-raw.json
         
-        # Remove fields that cause issues during registration
-        jq 'del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)' task-definition.json > temp.json && mv temp.json task-definition.json
+        echo "=== Container names in downloaded task definition ==="
+        cat task-definition-raw.json | jq '.containerDefinitions[].name'
+        
+        echo "=== Cleaning task definition ==="
+        jq 'del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)' task-definition-raw.json > task-definition.json
+        
+        echo "=== Container names after cleaning ==="
+        cat task-definition.json | jq '.containerDefinitions[].name'
+        
+        echo "=== Full container definition structure ==="
+        cat task-definition.json | jq '.containerDefinitions[] | {name: .name, image: .image}'
+        
+        echo "=== Saving task definition for inspection ==="
+        cp task-definition.json task-definition-backup.json
 
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: task-definition.json
-        container-name: ${{ env.CONTAINER_NAME }}
-        image: ${{ steps.build-image.outputs.image }}
+    - name: Manual container name fix
+      run: |
+        echo "=== Applying manual fix for container name ==="
+        # This ensures we're looking for the right container
+        ACTUAL_CONTAINER_NAME=$(cat task-definition.json | jq -r '.containerDefinitions[0].name')
+        echo "Actual container name found: $ACTUAL_CONTAINER_NAME"
+        
+        if [ "$ACTUAL_CONTAINER_NAME" != "${{ env.CONTAINER_NAME }}" ]; then
+          echo "WARNING: Container name mismatch!"
+          echo "Expected: ${{ env.CONTAINER_NAME }}"
+          echo "Found: $ACTUAL_CONTAINER_NAME"
+        fi
 
-    - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: ${{ env.ECS_SERVICE }}
-        cluster: ${{ env.ECS_CLUSTER }}
-        wait-for-service-stability: true
+    - name: Update task definition with new image (Alternative method)
+      id: update-task-def
+      run: |
+        echo "=== Using alternative method to update task definition ==="
+        
+        # Read the current task definition
+        TASK_DEF=$(cat task-definition.json)
+        
+        # Update the image for the portfolio-container
+        UPDATED_TASK_DEF=$(echo $TASK_DEF | jq --arg IMAGE "${{ steps.build-image.outputs.image }}" '.containerDefinitions[0].image = $IMAGE')
+        
+        # Save the updated task definition
+        echo $UPDATED_TASK_DEF > updated-task-definition.json
+        
+        echo "=== Updated task definition ==="
+        cat updated-task-definition.json | jq '.containerDefinitions[] | {name: .name, image: .image}'
+        
+        # Output the path for the next step
+        echo "task-definition=updated-task-definition.json" >> $GITHUB_OUTPUT
+
+    - name: Register updated task definition
+      run: |
+        echo "=== Registering new task definition ==="
+        aws ecs register-task-definition \
+          --cli-input-json file://updated-task-definition.json \
+          --query 'taskDefinition.taskDefinitionArn' \
+          --output text
+
+    - name: Update ECS service
+      run: |
+        echo "=== Updating ECS service ==="
+        aws ecs update-service \
+          --cluster ${{ env.ECS_CLUSTER }} \
+          --service ${{ env.ECS_SERVICE }} \
+          --task-definition ${{ env.ECS_TASK_DEFINITION }} \
+          --force-new-deployment
+        
+        echo "=== Waiting for service to stabilize ==="
+        aws ecs wait services-stable \
+          --cluster ${{ env.ECS_CLUSTER }} \
+          --services ${{ env.ECS_SERVICE }}
 
     - name: Verify deployment
       run: |
