@@ -9,477 +9,81 @@
     <meta property="og:title" content="HR Resume Screening AI Demo - AWS S3, Textract & Bedrock">
     <meta property="og:description" content="Live demonstration of enterprise AI solution for HR screening using AWS S3, Amazon Textract, and Amazon Bedrock with 90% faster processing and 85% accuracy.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://somdiproy.com/ai-demos/hr-screening">
-    <link rel="canonical" href="https://somdiproy.com/ai-demos/hr-screening">
+    <meta property="og:url" content="https://somdip.dev/ai-demos/hr-screening">
+    <link rel="canonical" href="https://somdip.dev/ai-demos/hr-screening">
 </head>
+<body>
 <div th:fragment="content">
     <!-- Demo Hero -->
-    <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <div class="inline-flex items-center bg-white bg-opacity-20 px-4 py-2 rounded-full mb-4">
-                <span th:class="${demoConfig.isAvailable ? 'bg-green-400 animate-pulse' : 'bg-red-400'}" 
-                      class="w-3 h-3 rounded-full mr-2"></span>
-                <span class="text-sm font-semibold" 
-                      th:text="${demoConfig.isAvailable ? 'Live Production Demo' : 'Demo Temporarily Offline'}">Live Production Demo</span>
-            </div>
-            <h1 class="text-4xl md:text-5xl font-bold mb-4" th:text="${projectName}">AI-Powered HR Resume Screening</h1>
-            <p class="text-xl text-blue-100 max-w-3xl mx-auto">
-                Enterprise AI solution using AWS S3, Amazon Textract, and Amazon Bedrock for intelligent resume processing and candidate matching
-            </p>
-        </div>
-    </section>
+    <div th:replace="~{ai-demos/fragments/hr-screening-hero :: hero}"></div>
 
-    <!-- Demo Information -->
-    <section class="py-16 bg-white">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="grid md:grid-cols-2 gap-12">
-                <div>
-                    <h2 class="text-3xl font-bold text-gray-800 mb-6">About This AI Demo</h2>
-                    <div class="space-y-4 text-gray-600">
-                        <p>
-                            This AI-powered HR screening system demonstrates enterprise-grade document processing 
-                            capabilities using cutting-edge AWS machine learning services. The application automatically extracts, 
-                            analyzes, and matches candidate resumes with job requirements using advanced GenAI technology.
-                        </p>
-                        <p>
-                            Built with modern Java Spring Boot architecture and seamlessly integrated with <strong>AWS S3</strong> for secure 
-                            document storage, <strong>Amazon Textract</strong> for advanced OCR processing, and <strong>Amazon Bedrock</strong> 
-                            for intelligent natural language understanding and analysis.
-                        </p>
-                    </div>
-                    
-                    <h3 class="text-xl font-semibold text-gray-800 mt-8 mb-4">Key Features & Capabilities</h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start text-gray-600">
-                            <i class="fas fa-cloud text-blue-500 mr-3 mt-1"></i>
-                            <span><strong>AWS S3 Integration:</strong> Secure, scalable document storage with enterprise-grade encryption</span>
-                        </li>
-                        <li class="flex items-start text-gray-600">
-                            <i class="fas fa-eye text-green-500 mr-3 mt-1"></i>
-                            <span><strong>Amazon Textract OCR:</strong> Advanced document text extraction with layout understanding</span>
-                        </li>
-                        <li class="flex items-start text-gray-600">
-                            <i class="fas fa-brain text-purple-500 mr-3 mt-1"></i>
-                            <span><strong>Amazon Bedrock GenAI:</strong> Intelligent skills extraction and candidate analysis</span>
-                        </li>
-                        <li class="flex items-start text-gray-600">
-                            <i class="fas fa-search text-orange-500 mr-3 mt-1"></i>
-                            <span><strong>Smart Matching:</strong> AI-powered job requirement matching with confidence scoring</span>
-                        </li>
-                        <li class="flex items-start text-gray-600">
-                            <i class="fas fa-chart-line text-red-500 mr-3 mt-1"></i>
-                            <span><strong>Real-time Processing:</strong> Instant resume analysis and candidate ranking</span>
-                        </li>
-                        <li class="flex items-start text-gray-600">
-                            <i class="fas fa-shield-alt text-gray-500 mr-3 mt-1"></i>
-                            <span><strong>Enterprise Security:</strong> Data privacy compliance and secure processing pipeline</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-xl">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-6">Live Demo Interface</h3>
-                    
-                    <!-- Demo Status Check -->
-                    <div th:if="${demoConfig.isAvailable}" class="mb-6">
-                        <!-- Demo Tabs -->
-                        <div class="flex gap-2 mb-4">
-                            <button onclick="showIframe()" 
-                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                                    id="iframeBtn">
-                                <i class="fas fa-window-maximize mr-2"></i>Live Demo
-                            </button>
-                            <button onclick="showMetrics()" 
-                                    class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition"
-                                    id="metricsBtn">
-                                <i class="fas fa-chart-bar mr-2"></i>Performance
-                            </button>
-                        </div>
-                        
-                        <!-- Live Demo Iframe -->
-                        <div id="iframeDemo" class="hidden">
-                            <div class="bg-white border border-gray-300 rounded-lg overflow-hidden mb-4">
-                                <div class="bg-blue-600 text-white p-3 text-center font-semibold">
-                                    <i class="fas fa-play mr-2"></i>
-                                    Live HR Resume Screening Application
-                                    <span class="bg-green-400 text-green-900 text-xs px-2 py-1 rounded-full ml-2">LIVE</span>
-                                </div>
-                                <iframe 
-                                    th:src="${demoConfig.embedUrl}"
-                                    width="100%" 
-                                    height="600"
-                                    frameborder="0"
-                                    class="w-full"
-                                    title="HR Resume Screening Demo"
-                                    onload="iframeLoaded()"
-                                    onerror="iframeError()">
-                                    <p>Your browser does not support iframes. 
-                                       <a th:href="${demoConfig.externalUrl}" target="_blank" class="text-blue-600">
-                                           Click here to open the demo
-                                       </a>
-                                    </p>
-                                </iframe>
-                            </div>
-                            
-                            <!-- Demo Action Buttons -->
-                            <div class="text-center space-y-3">
-                                <div class="text-sm text-gray-600">
-                                    <i class="fas fa-info-circle mr-1"></i>
-                                    For the best experience, you can also:
-                                </div>
-                                <div class="flex gap-3 justify-center">
-                                    <a th:href="${demoConfig.externalUrl}" target="_blank"
-                                       class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
-                                        <i class="fas fa-external-link-alt mr-2"></i>Open in New Tab
-                                    </a>
-                                    <a th:href="${demoConfig.embedUrl}" target="_blank"
-                                       class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
-                                        <i class="fas fa-link mr-2"></i>Direct Access
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Demo Unavailable Message -->
-                    <div th:unless="${demoConfig.isAvailable}" class="mb-6">
-                        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-6 py-4 rounded-lg text-center">
-                            <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
-                            <h4 class="font-semibold mb-2">Demo Temporarily Unavailable</h4>
-                            <p class="mb-3">The HR screening application is currently offline for maintenance or updates.</p>
-                            <div class="flex gap-2 justify-center">
-                                <a href="/contact" class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition">
-                                    <i class="fas fa-envelope mr-2"></i>Contact for Live Demo
-                                </a>
-                                <button onclick="location.reload()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                                    <i class="fas fa-sync-alt mr-2"></i>Refresh Status
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Demo Metrics (always show) -->
-                    <div id="demoMetrics">
-                        <h4 class="text-lg font-semibold text-gray-800 mb-4">Performance Metrics</h4>
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div class="bg-white p-4 rounded-lg text-center shadow">
-                                <div class="text-3xl font-bold text-blue-600" th:text="${demoMetrics.totalResumes}">150+</div>
-                                <div class="text-sm text-gray-600">Resumes Processed</div>
-                            </div>
-                            <div class="bg-white p-4 rounded-lg text-center shadow">
-                                <div class="text-3xl font-bold text-green-600" th:text="${demoMetrics.accuracy}">85%</div>
-                                <div class="text-sm text-gray-600">Match Accuracy</div>
-                            </div>
-                            <div class="bg-white p-4 rounded-lg text-center shadow">
-                                <div class="text-3xl font-bold text-purple-600" th:text="${demoMetrics.timeReduction}">90%</div>
-                                <div class="text-sm text-gray-600">Time Reduction</div>
-                            </div>
-                            <div class="bg-white p-4 rounded-lg text-center shadow">
-                                <div class="text-3xl font-bold text-orange-600" th:text="${demoMetrics.uptime}">99.9%</div>
-                                <div class="text-sm text-gray-600">Uptime</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Business Value -->
-                        <div class="bg-white p-4 rounded-lg mb-6">
-                            <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
-                                <i class="fas fa-dollar-sign text-green-600 mr-2"></i>
-                                Business Value Delivered
-                            </h4>
-                            <div class="space-y-2 text-sm text-gray-600">
-                                <div class="flex justify-between">
-                                    <span>Processing Speed Improvement:</span>
-                                    <span class="font-semibold text-green-600" th:text="${businessValue.speedImprovement}">90% faster</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span>Manual Review Reduction:</span>
-                                    <span class="font-semibold text-blue-600" th:text="${businessValue.manualReduction}">75% less effort</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span>Candidate Quality Score:</span>
-                                    <span class="font-semibold text-purple-600" th:text="${businessValue.qualityScore}">85% accuracy</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span>Cost Savings per Hire:</span>
-                                    <span class="font-semibold text-orange-600" th:text="${businessValue.costSavings}">$2,500</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Try Demo Button (conditional) -->
-                        <div class="text-center" th:if="${demoConfig.isAvailable}">
-                            <button onclick="showIframe()" 
-                                    class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
-                                <i class="fas fa-play mr-2"></i>Try Live Demo
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Navigation -->
-                    <div class="text-center mt-6">
-                        <a href="/ai-demos" class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition font-semibold">
-                            <i class="fas fa-arrow-left mr-2"></i>Back to AI Demos
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Demo Information and Live Demo -->
+    <div th:replace="~{ai-demos/fragments/hr-screening-demo :: demo-section}"></div>
 
     <!-- Technology Architecture -->
-    <section class="py-16 bg-gray-50">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Technology Architecture & Stack</h2>
-            
-            <!-- Architecture Diagram -->
-            <div class="bg-white p-8 rounded-xl shadow-lg mb-8">
-                <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center">AI Processing Pipeline</h3>
-                <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
-                    <div class="bg-blue-100 p-4 rounded-lg text-center flex-1">
-                        <i class="fas fa-upload text-blue-600 text-2xl mb-2"></i>
-                        <h4 class="font-semibold text-gray-800">Upload</h4>
-                        <p class="text-sm text-gray-600">Resume Upload via Web Interface</p>
-                    </div>
-                    <i class="fas fa-arrow-right text-gray-400 hidden md:block"></i>
-                    <div class="bg-green-100 p-4 rounded-lg text-center flex-1">
-                        <i class="fas fa-cloud text-green-600 text-2xl mb-2"></i>
-                        <h4 class="font-semibold text-gray-800">AWS S3</h4>
-                        <p class="text-sm text-gray-600">Secure Document Storage</p>
-                    </div>
-                    <i class="fas fa-arrow-right text-gray-400 hidden md:block"></i>
-                    <div class="bg-purple-100 p-4 rounded-lg text-center flex-1">
-                        <i class="fas fa-eye text-purple-600 text-2xl mb-2"></i>
-                        <h4 class="font-semibold text-gray-800">Textract</h4>
-                        <p class="text-sm text-gray-600">OCR Text Extraction</p>
-                    </div>
-                    <i class="fas fa-arrow-right text-gray-400 hidden md:block"></i>
-                    <div class="bg-orange-100 p-4 rounded-lg text-center flex-1">
-                        <i class="fas fa-brain text-orange-600 text-2xl mb-2"></i>
-                        <h4 class="font-semibold text-gray-800">Bedrock</h4>
-                        <p class="text-sm text-gray-600">AI Analysis & Matching</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Technology Stack Details -->
-            <div class="grid md:grid-cols-4 gap-6">
-                <div class="bg-white p-6 rounded-xl shadow text-center hover:shadow-lg transition-shadow">
-                    <i class="fas fa-code text-blue-600 text-3xl mb-3"></i>
-                    <h3 class="font-semibold text-gray-800 mb-2">Backend Framework</h3>
-                    <p class="text-sm text-gray-600 mb-3">Java 17, Spring Boot 3.x, REST APIs</p>
-                    <div class="text-xs text-gray-500">Enterprise-grade development</div>
-                </div>
-                
-                <div class="bg-white p-6 rounded-xl shadow text-center hover:shadow-lg transition-shadow">
-                    <i class="fas fa-cloud text-green-600 text-3xl mb-3"></i>
-                    <h3 class="font-semibold text-gray-800 mb-2">AWS Storage</h3>
-                    <p class="text-sm text-gray-600 mb-3">AWS S3, IAM, CloudWatch</p>
-                    <div class="text-xs text-gray-500">Secure & scalable storage</div>
-                </div>
-                
-                <div class="bg-white p-6 rounded-xl shadow text-center hover:shadow-lg transition-shadow">
-                    <i class="fas fa-eye text-purple-600 text-3xl mb-3"></i>
-                    <h3 class="font-semibold text-gray-800 mb-2">Document Processing</h3>
-                    <p class="text-sm text-gray-600 mb-3">Amazon Textract, Document AI</p>
-                    <div class="text-xs text-gray-500">Advanced OCR capabilities</div>
-                </div>
-                
-                <div class="bg-white p-6 rounded-xl shadow text-center hover:shadow-lg transition-shadow">
-                    <i class="fas fa-brain text-orange-600 text-3xl mb-3"></i>
-                    <h3 class="font-semibold text-gray-800 mb-2">GenAI Engine</h3>
-                    <p class="text-sm text-gray-600 mb-3">Amazon Bedrock, Claude, LLMs</p>
-                    <div class="text-xs text-gray-500">Intelligent analysis</div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <div th:replace="~{ai-demos/fragments/hr-screening-tech :: tech-architecture}"></div>
 
     <!-- Use Cases & Benefits -->
-    <section class="py-16 bg-white">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Enterprise Use Cases & Benefits</h2>
+    <div th:replace="~{ai-demos/fragments/hr-screening-benefits :: use-cases}"></div>
+    
+    <!-- Load HR Demo JavaScript with proper Spring context path -->
+    <script type="text/javascript" th:src="@{/js/hr-demo.js(v=${applicationVersion})}"></script>
+    
+    <!-- Initialize after script loads -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // Make demo config available to JavaScript
+        window.demoConfig = {
+            externalUrl: /*[[${demoConfig?.externalUrl ?: 'https://demos.somdip.dev'}]]*/ 'https://demos.somdip.dev',
+            embedUrl: /*[[${demoConfig?.embedUrl ?: 'https://demos.somdip.dev'}]]*/ 'https://demos.somdip.dev',
+            isAvailable: /*[[${demoConfig?.available ?: true}]]*/ true
+        };
+        
+        // Setup event listeners when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Setting up event listeners...');
             
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
-                    <div class="bg-blue-600 w-12 h-12 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-users text-white text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-3">HR Departments</h3>
-                    <p class="text-gray-600 text-sm">
-                        Automate initial resume screening, reduce manual effort, and improve candidate selection quality 
-                        with AI-powered matching algorithms.
-                    </p>
-                </div>
-                
-                <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl">
-                    <div class="bg-green-600 w-12 h-12 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-building text-white text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Recruitment Agencies</h3>
-                    <p class="text-gray-600 text-sm">
-                        Process large volumes of resumes efficiently, maintain candidate databases, and provide 
-                        data-driven insights to clients.
-                    </p>
-                </div>
-                
-                <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl">
-                    <div class="bg-purple-600 w-12 h-12 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-chart-line text-white text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Enterprise Hiring</h3>
-                    <p class="text-gray-600 text-sm">
-                        Scale hiring processes, ensure consistent evaluation criteria, and reduce time-to-hire 
-                        for high-volume recruitment.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Call to Action -->
-    <section class="py-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-4">Ready to Implement AI-Powered HR Solutions?</h2>
-            <p class="text-xl text-blue-100 mb-8">
-                Let's discuss how this AI resume screening technology can be customized and implemented 
-                for your organization's specific hiring needs and requirements.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="/contact"
-                   class="bg-white text-blue-600 px-8 py-3 rounded-lg hover:bg-gray-100 transition font-semibold">
-                    <i class="fas fa-handshake mr-2"></i>Discuss Implementation
-                </a>
-                <a href="/ai-demos"
-                   class="border-2 border-white text-white px-8 py-3 rounded-lg hover:bg-white hover:text-blue-600 transition font-semibold">
-                    <i class="fas fa-brain mr-2"></i>Explore More AI Demos
-                </a>
-            </div>
-        </div>
-    </section>
+            // Live Demo button - now redirects
+            const iframeBtn = document.getElementById('iframeBtn');
+            if (iframeBtn) {
+                iframeBtn.addEventListener('click', function() {
+                    window.location.href = 'https://demos.somdip.dev';
+                });
+            }
+            
+            // Performance button
+            const metricsBtn = document.getElementById('metricsBtn');
+            if (metricsBtn) {
+                metricsBtn.addEventListener('click', function() {
+                    if (window.hrDemoFunctions && window.hrDemoFunctions.showMetrics) {
+                        window.hrDemoFunctions.showMetrics();
+                    }
+                });
+            }
+            
+            // Reload buttons - now redirect
+            const reloadBtns = document.querySelectorAll('.hr-demo-reload-btn');
+            reloadBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    window.location.href = 'https://demos.somdip.dev';
+                });
+            });
+            
+            // Try Demo buttons - now redirect
+            const tryBtns = document.querySelectorAll('.hr-demo-try-btn');
+            tryBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    window.location.href = 'https://demos.somdip.dev';
+                });
+            });
+            
+            // Initial state - show metrics
+            if (window.hrDemoFunctions && window.hrDemoFunctions.showMetrics) {
+                window.hrDemoFunctions.showMetrics();
+            }
+        });
+        /*]]>*/
+    </script>
 </div>
-
-<script>
-// Demo interface controls
-function showIframe() {
-    const iframeDemo = document.getElementById('iframeDemo');
-    const demoMetrics = document.getElementById('demoMetrics');
-    const iframeBtn = document.getElementById('iframeBtn');
-    const metricsBtn = document.getElementById('metricsBtn');
-    
-    if (iframeDemo && demoMetrics) {
-        iframeDemo.classList.remove('hidden');
-        demoMetrics.classList.add('hidden');
-        
-        // Update button styles
-        iframeBtn.classList.remove('bg-gray-600');
-        iframeBtn.classList.add('bg-blue-600');
-        metricsBtn.classList.remove('bg-blue-600');
-        metricsBtn.classList.add('bg-gray-600');
-    }
-}
-
-function showMetrics() {
-    const iframeDemo = document.getElementById('iframeDemo');
-    const demoMetrics = document.getElementById('demoMetrics');
-    const iframeBtn = document.getElementById('iframeBtn');
-    const metricsBtn = document.getElementById('metricsBtn');
-    
-    if (iframeDemo && demoMetrics) {
-        iframeDemo.classList.add('hidden');
-        demoMetrics.classList.remove('hidden');
-        
-        // Update button styles
-        metricsBtn.classList.remove('bg-gray-600');
-        metricsBtn.classList.add('bg-blue-600');
-        iframeBtn.classList.remove('bg-blue-600');
-        iframeBtn.classList.add('bg-gray-600');
-    }
-}
-
-function iframeLoaded() {
-    console.log('✅ HR Demo iframe loaded successfully');
-    
-    // Optional: Add success indicator
-    const iframe = document.querySelector('iframe[title="HR Resume Screening Demo"]');
-    if (iframe && iframe.parentElement) {
-        const successIndicator = document.createElement('div');
-        successIndicator.className = 'absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full';
-        successIndicator.innerHTML = '<i class="fas fa-check mr-1"></i>Connected';
-        iframe.parentElement.style.position = 'relative';
-        iframe.parentElement.appendChild(successIndicator);
-        
-        // Remove indicator after 3 seconds
-        setTimeout(() => {
-            if (successIndicator.parentElement) {
-                successIndicator.parentElement.removeChild(successIndicator);
-            }
-        }, 3000);
-    }
-}
-
-function iframeError() {
-    console.error('❌ HR Demo iframe failed to load');
-    const iframeDemo = document.getElementById('iframeDemo');
-    if (iframeDemo) {
-        iframeDemo.innerHTML = `
-            <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-                <i class="fas fa-exclamation-triangle text-red-600 text-3xl mb-3"></i>
-                <h4 class="text-red-800 font-semibold mb-2">Demo Connection Failed</h4>
-                <p class="text-red-600 mb-4">Unable to load the HR screening application. The service may be temporarily unavailable.</p>
-                <div class="flex gap-2 justify-center">
-                    <button onclick="location.reload()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
-                        <i class="fas fa-sync-alt mr-2"></i>Retry
-                    </button>
-                    <a href="/contact" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                        <i class="fas fa-envelope mr-2"></i>Contact Support
-                    </a>
-                </div>
-            </div>
-        `;
-    }
-}
-
-// Auto-refresh demo status every 5 minutes if demo is unavailable
-function checkDemoStatus() {
-    const isAvailable = /*[[${demoConfig.isAvailable}]]*/ true;
-    if (!isAvailable) {
-        console.log('🔄 Demo unavailable, will auto-refresh in 5 minutes');
-        setTimeout(() => {
-            location.reload();
-        }, 300000); // 5 minutes
-    }
-}
-
-// Initialize page
-document.addEventListener('DOMContentLoaded', function() {
-    // Show metrics by default
-    showMetrics();
-    
-    // Check demo status
-    checkDemoStatus();
-    
-    // Add keyboard shortcuts
-    document.addEventListener('keydown', function(e) {
-        // Alt + D to toggle demo
-        if (e.altKey && e.key === 'd') {
-            e.preventDefault();
-            const isIframeVisible = !document.getElementById('iframeDemo').classList.contains('hidden');
-            if (isIframeVisible) {
-                showMetrics();
-            } else {
-                showIframe();
-            }
-        }
-        
-        // Alt + R to refresh
-        if (e.altKey && e.key === 'r') {
-            e.preventDefault();
-            location.reload();
-        }
-    });
-    
-    console.log('🚀 HR Demo page initialized');
-    console.log('💡 Keyboard shortcuts: Alt+D (toggle demo), Alt+R (refresh)');
-});
-</script>
+</body>
 </html>

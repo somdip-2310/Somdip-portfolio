@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Use Cases & Benefits Fragment -->
+    <section th:fragment="use-cases" class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Enterprise Use Cases & Benefits</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
+                    <div class="bg-blue-600 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-users text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">HR Departments</h3>
+                    <p class="text-gray-600 text-sm">
+                        Automate initial resume screening, reduce manual effort, and improve candidate selection quality 
+                        with AI-powered matching algorithms.
+                    </p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl">
+                    <div class="bg-green-600 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-building text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Recruitment Agencies</h3>
+                    <p class="text-gray-600 text-sm">
+                        Process large volumes of resumes efficiently, maintain candidate databases, and provide 
+                        data-driven insights to clients.
+                    </p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl">
+                    <div class="bg-purple-600 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-line text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Enterprise Scale</h3>
+                    <p class="text-gray-600 text-sm">
+                        Handle thousands of applications, scale with business growth, and maintain consistent hiring 
+                        standards across departments.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Key Benefits Section -->
+            <div class="mt-16">
+                <h3 class="text-2xl font-bold text-center mb-8 text-gray-800">Measurable Business Impact</h3>
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-xl">
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-blue-600 mb-2">90%</div>
+                            <div class="text-sm font-semibold text-gray-700">Faster Screening</div>
+                            <div class="text-xs text-gray-500 mt-1">vs. manual review</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-green-600 mb-2">85%</div>
+                            <div class="text-sm font-semibold text-gray-700">Match Accuracy</div>
+                            <div class="text-xs text-gray-500 mt-1">AI-powered matching</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-purple-600 mb-2">75%</div>
+                            <div class="text-sm font-semibold text-gray-700">Cost Reduction</div>
+                            <div class="text-xs text-gray-500 mt-1">in hiring process</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-orange-600 mb-2">24/7</div>
+                            <div class="text-sm font-semibold text-gray-700">Availability</div>
+                            <div class="text-xs text-gray-500 mt-1">automated processing</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CTA Section -->
+            <div class="text-center mt-12">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Ready to Transform Your Hiring Process?</h3>
+                <div class="flex gap-4 justify-center">
+                    <a href="/contact" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                        <i class="fas fa-envelope mr-2"></i>Request Demo
+                    </a>
+                    <a href="/projects" class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition font-semibold">
+                        <i class="fas fa-folder-open mr-2"></i>View More Projects
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
