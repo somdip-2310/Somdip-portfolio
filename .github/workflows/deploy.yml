@@ -1,5 +1,5 @@
 # .github/workflows/deploy.yml
-# Fixed workflow that properly uses the new task definition ARN
+# Simplified workflow that matches your actual container name
 
 name: Deploy Portfolio to AWS ECS
 
@@ -15,7 +15,7 @@ env:
   ECS_SERVICE: somdip-portfolio-service
   ECS_CLUSTER: somdip-dev-cluster
   ECS_TASK_DEFINITION: somdip-portfolio
-  CONTAINER_NAME: portfolio-container
+  CONTAINER_NAME: portfolio  # ✅ CHANGED to match your actual container name
 
 jobs:
   deploy:
@@ -78,114 +78,39 @@ jobs:
         # Output the image URI
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    - name: Get latest working task definition revision
-      id: get-task-def
+    - name: Download current task definition
       run: |
-        echo "=== Finding a working task definition revision ==="
-        
-        # Get the latest ACTIVE revision that has portfolio-container
-        WORKING_TASK_DEF=$(aws ecs list-task-definitions \
-          --family-prefix ${{ env.ECS_TASK_DEFINITION }} \
-          --status ACTIVE \
-          --sort DESC \
-          --query 'taskDefinitionArns[0]' \
-          --output text)
-        
-        echo "Found task definition: $WORKING_TASK_DEF"
-        
-        # Download it
         aws ecs describe-task-definition \
-          --task-definition $WORKING_TASK_DEF \
+          --task-definition ${{ env.ECS_TASK_DEFINITION }} \
           --query taskDefinition > task-definition.json
         
-        # Verify container name
-        CONTAINER_NAME=$(cat task-definition.json | jq -r '.containerDefinitions[0].name')
-        echo "Container name in task definition: $CONTAINER_NAME"
-        
-        # Clean it up
-        jq 'del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)' task-definition.json > task-definition-clean.json
-        mv task-definition-clean.json task-definition.json
+        # Remove unnecessary fields
+        jq 'del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)' task-definition.json > temp.json && mv temp.json task-definition.json
 
-    - name: Update task definition with new image
-      id: update-task-def
-      run: |
-        echo "=== Updating container image in task definition ==="
-        
-        # Update the image
-        jq --arg IMAGE "${{ steps.build-image.outputs.image }}" \
-          '.containerDefinitions[0].image = $IMAGE' \
-          task-definition.json > updated-task-definition.json
-        
-        # Show what we're about to register
-        echo "Container configuration:"
-        cat updated-task-definition.json | jq '.containerDefinitions[] | {name: .name, image: .image}'
-        
-        # Register the new task definition
-        NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
-          --cli-input-json file://updated-task-definition.json \
-          --query 'taskDefinition.taskDefinitionArn' \
-          --output text)
-        
-        echo "Registered new task definition: $NEW_TASK_DEF_ARN"
-        echo "task-definition-arn=$NEW_TASK_DEF_ARN" >> $GITHUB_OUTPUT
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: task-definition.json
+        container-name: ${{ env.CONTAINER_NAME }}  # Now using 'portfolio'
+        image: ${{ steps.build-image.outputs.image }}
 
-    - name: Update ECS service with new task definition
-      run: |
-        echo "=== Updating ECS service ==="
-        
-        # Use the new task definition ARN
-        aws ecs update-service \
-          --cluster ${{ env.ECS_CLUSTER }} \
-          --service ${{ env.ECS_SERVICE }} \
-          --task-definition ${{ steps.update-task-def.outputs.task-definition-arn }} \
-          --force-new-deployment \
-          --query 'service.taskDefinition' \
-          --output text
-        
-        echo "Service update initiated"
-
-    - name: Wait for service to stabilize
-      run: |
-        echo "=== Waiting for service to stabilize ==="
-        
-        # Wait up to 10 minutes for the service to stabilize
-        aws ecs wait services-stable \
-          --cluster ${{ env.ECS_CLUSTER }} \
-          --services ${{ env.ECS_SERVICE }} \
-          || echo "Service stabilization timed out (this is normal for zero-downtime deployments)"
-        
-        # Check final status
-        echo "=== Final service status ==="
-        aws ecs describe-services \
-          --cluster ${{ env.ECS_CLUSTER }} \
-          --services ${{ env.ECS_SERVICE }} \
-          --query 'services[0].deployments[?status==`PRIMARY`].[status, desiredCount, runningCount, taskDefinition]' \
-          --output table
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
 
     - name: Verify deployment
       run: |
-        echo "=== Verifying deployment ==="
-        
-        # Get the running task
-        RUNNING_TASKS=$(aws ecs list-tasks \
+        echo "Deployment completed! Verifying service status..."
+        aws ecs describe-services \
           --cluster ${{ env.ECS_CLUSTER }} \
-          --service-name ${{ env.ECS_SERVICE }} \
-          --desired-status RUNNING \
-          --query 'taskArns[0]' \
-          --output text)
-        
-        if [ "$RUNNING_TASKS" != "None" ]; then
-          echo "✅ Service has running tasks"
-          
-          # Get task details
-          aws ecs describe-tasks \
-            --cluster ${{ env.ECS_CLUSTER }} \
-            --tasks $RUNNING_TASKS \
-            --query 'tasks[0].[taskDefinitionArn, lastStatus, healthStatus]' \
-            --output table
-        else
-          echo "⚠️  No running tasks found yet"
-        fi
+          --services ${{ env.ECS_SERVICE }} \
+          --query 'services[0].deployments[0].status' \
+          --output text
 
     - name: Create deployment summary
       if: always()
@@ -204,6 +129,5 @@ jobs:
         echo "- **Cluster**: ${{ env.ECS_CLUSTER }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Container**: ${{ env.CONTAINER_NAME }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Image**: \`${{ steps.build-image.outputs.image }}\`" >> $GITHUB_STEP_SUMMARY
-        echo "- **Task Definition**: \`${{ steps.update-task-def.outputs.task-definition-arn }}\`" >> $GITHUB_STEP_SUMMARY
         echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Time**: $(date)" >> $GITHUB_STEP_SUMMARY
