@@ -14,7 +14,7 @@ env:
   ECS_SERVICE: somdip-portfolio-service
   ECS_CLUSTER: somdip-dev-cluster
   ECS_TASK_DEFINITION: somdip-portfolio
-  CONTAINER_NAME: somdip-portfolio
+  CONTAINER_NAME: portfolio-container  # ✅ FIXED: Using the correct container name
 
 jobs:
   deploy:
@@ -86,12 +86,17 @@ jobs:
         # Remove unnecessary fields that cause issues during registration
         jq 'del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)' task-definition.json > temp.json && mv temp.json task-definition.json
 
+    - name: Debug - Show container name (optional - remove after verification)
+      run: |
+        echo "Container names in task definition:"
+        cat task-definition.json | jq '.containerDefinitions[].name'
+
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: task-definition.json
-        container-name: ${{ env.CONTAINER_NAME }}
+        container-name: ${{ env.CONTAINER_NAME }}  # ✅ Now using 'portfolio-container'
         image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
@@ -124,6 +129,7 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "- **Service**: ${{ env.ECS_SERVICE }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Cluster**: ${{ env.ECS_CLUSTER }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Container**: ${{ env.CONTAINER_NAME }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Image**: ${{ steps.build-image.outputs.image }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Time**: $(date)" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
