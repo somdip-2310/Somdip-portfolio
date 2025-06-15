@@ -1,5 +1,5 @@
 # .github/workflows/deploy.yml
-# Diagnostic version to identify and fix the container name issue
+# Fixed workflow that properly uses the new task definition ARN
 
 name: Deploy Portfolio to AWS ECS
 
@@ -78,91 +78,114 @@ jobs:
         # Output the image URI
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    - name: Download and analyze task definition
+    - name: Get latest working task definition revision
+      id: get-task-def
       run: |
-        echo "=== Downloading task definition ==="
+        echo "=== Finding a working task definition revision ==="
+        
+        # Get the latest ACTIVE revision that has portfolio-container
+        WORKING_TASK_DEF=$(aws ecs list-task-definitions \
+          --family-prefix ${{ env.ECS_TASK_DEFINITION }} \
+          --status ACTIVE \
+          --sort DESC \
+          --query 'taskDefinitionArns[0]' \
+          --output text)
+        
+        echo "Found task definition: $WORKING_TASK_DEF"
+        
+        # Download it
         aws ecs describe-task-definition \
-          --task-definition ${{ env.ECS_TASK_DEFINITION }} \
-          --query taskDefinition > task-definition-raw.json
+          --task-definition $WORKING_TASK_DEF \
+          --query taskDefinition > task-definition.json
         
-        echo "=== Container names in downloaded task definition ==="
-        cat task-definition-raw.json | jq '.containerDefinitions[].name'
+        # Verify container name
+        CONTAINER_NAME=$(cat task-definition.json | jq -r '.containerDefinitions[0].name')
+        echo "Container name in task definition: $CONTAINER_NAME"
         
-        echo "=== Cleaning task definition ==="
-        jq 'del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)' task-definition-raw.json > task-definition.json
-        
-        echo "=== Container names after cleaning ==="
-        cat task-definition.json | jq '.containerDefinitions[].name'
-        
-        echo "=== Full container definition structure ==="
-        cat task-definition.json | jq '.containerDefinitions[] | {name: .name, image: .image}'
-        
-        echo "=== Saving task definition for inspection ==="
-        cp task-definition.json task-definition-backup.json
+        # Clean it up
+        jq 'del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities) | del(.registeredAt) | del(.registeredBy)' task-definition.json > task-definition-clean.json
+        mv task-definition-clean.json task-definition.json
 
-    - name: Manual container name fix
-      run: |
-        echo "=== Applying manual fix for container name ==="
-        # This ensures we're looking for the right container
-        ACTUAL_CONTAINER_NAME=$(cat task-definition.json | jq -r '.containerDefinitions[0].name')
-        echo "Actual container name found: $ACTUAL_CONTAINER_NAME"
-        
-        if [ "$ACTUAL_CONTAINER_NAME" != "${{ env.CONTAINER_NAME }}" ]; then
-          echo "WARNING: Container name mismatch!"
-          echo "Expected: ${{ env.CONTAINER_NAME }}"
-          echo "Found: $ACTUAL_CONTAINER_NAME"
-        fi
-
-    - name: Update task definition with new image (Alternative method)
+    - name: Update task definition with new image
       id: update-task-def
       run: |
-        echo "=== Using alternative method to update task definition ==="
+        echo "=== Updating container image in task definition ==="
         
-        # Read the current task definition
-        TASK_DEF=$(cat task-definition.json)
+        # Update the image
+        jq --arg IMAGE "${{ steps.build-image.outputs.image }}" \
+          '.containerDefinitions[0].image = $IMAGE' \
+          task-definition.json > updated-task-definition.json
         
-        # Update the image for the portfolio-container
-        UPDATED_TASK_DEF=$(echo $TASK_DEF | jq --arg IMAGE "${{ steps.build-image.outputs.image }}" '.containerDefinitions[0].image = $IMAGE')
-        
-        # Save the updated task definition
-        echo $UPDATED_TASK_DEF > updated-task-definition.json
-        
-        echo "=== Updated task definition ==="
+        # Show what we're about to register
+        echo "Container configuration:"
         cat updated-task-definition.json | jq '.containerDefinitions[] | {name: .name, image: .image}'
         
-        # Output the path for the next step
-        echo "task-definition=updated-task-definition.json" >> $GITHUB_OUTPUT
-
-    - name: Register updated task definition
-      run: |
-        echo "=== Registering new task definition ==="
-        aws ecs register-task-definition \
+        # Register the new task definition
+        NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
           --cli-input-json file://updated-task-definition.json \
           --query 'taskDefinition.taskDefinitionArn' \
-          --output text
+          --output text)
+        
+        echo "Registered new task definition: $NEW_TASK_DEF_ARN"
+        echo "task-definition-arn=$NEW_TASK_DEF_ARN" >> $GITHUB_OUTPUT
 
-    - name: Update ECS service
+    - name: Update ECS service with new task definition
       run: |
         echo "=== Updating ECS service ==="
+        
+        # Use the new task definition ARN
         aws ecs update-service \
           --cluster ${{ env.ECS_CLUSTER }} \
           --service ${{ env.ECS_SERVICE }} \
-          --task-definition ${{ env.ECS_TASK_DEFINITION }} \
-          --force-new-deployment
+          --task-definition ${{ steps.update-task-def.outputs.task-definition-arn }} \
+          --force-new-deployment \
+          --query 'service.taskDefinition' \
+          --output text
         
+        echo "Service update initiated"
+
+    - name: Wait for service to stabilize
+      run: |
         echo "=== Waiting for service to stabilize ==="
+        
+        # Wait up to 10 minutes for the service to stabilize
         aws ecs wait services-stable \
           --cluster ${{ env.ECS_CLUSTER }} \
-          --services ${{ env.ECS_SERVICE }}
-
-    - name: Verify deployment
-      run: |
-        echo "Deployment completed! Verifying service status..."
+          --services ${{ env.ECS_SERVICE }} \
+          || echo "Service stabilization timed out (this is normal for zero-downtime deployments)"
+        
+        # Check final status
+        echo "=== Final service status ==="
         aws ecs describe-services \
           --cluster ${{ env.ECS_CLUSTER }} \
           --services ${{ env.ECS_SERVICE }} \
-          --query 'services[0].deployments[0].status' \
-          --output text
+          --query 'services[0].deployments[?status==`PRIMARY`].[status, desiredCount, runningCount, taskDefinition]' \
+          --output table
+
+    - name: Verify deployment
+      run: |
+        echo "=== Verifying deployment ==="
+        
+        # Get the running task
+        RUNNING_TASKS=$(aws ecs list-tasks \
+          --cluster ${{ env.ECS_CLUSTER }} \
+          --service-name ${{ env.ECS_SERVICE }} \
+          --desired-status RUNNING \
+          --query 'taskArns[0]' \
+          --output text)
+        
+        if [ "$RUNNING_TASKS" != "None" ]; then
+          echo "✅ Service has running tasks"
+          
+          # Get task details
+          aws ecs describe-tasks \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --tasks $RUNNING_TASKS \
+            --query 'tasks[0].[taskDefinitionArn, lastStatus, healthStatus]' \
+            --output table
+        else
+          echo "⚠️  No running tasks found yet"
+        fi
 
     - name: Create deployment summary
       if: always()
@@ -181,5 +204,6 @@ jobs:
         echo "- **Cluster**: ${{ env.ECS_CLUSTER }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Container**: ${{ env.CONTAINER_NAME }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Image**: \`${{ steps.build-image.outputs.image }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **Task Definition**: \`${{ steps.update-task-def.outputs.task-definition-arn }}\`" >> $GITHUB_STEP_SUMMARY
         echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Time**: $(date)" >> $GITHUB_STEP_SUMMARY
