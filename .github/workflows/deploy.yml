@@ -1,4 +1,4 @@
-name: Deploy Portfolio Service to ECS
+name: Deploy Portfolio to ECS (Fixed SendGrid)
 
 on:
   push:
@@ -132,14 +132,22 @@ jobs:
         ENV_COUNT=$(cat task-definition-final.json | jq '.containerDefinitions[0].environment | length')
         echo "Environment variables count: $ENV_COUNT"
         
-        # Verify no secrets section exists (to avoid conflict)
-        SECRETS_EXIST=$(cat task-definition-final.json | jq 'has("secrets") or .containerDefinitions[0] | has("secrets")')
-        echo "Secrets section exists: $SECRETS_EXIST"
+        # Check for SENDGRID_API_KEY in environment
+        SENDGRID_CONFIGURED=$(cat task-definition-final.json | jq '.containerDefinitions[0].environment[] | select(.name=="SENDGRID_API_KEY") | .name' -r)
+        echo "SendGrid API key configured: $SENDGRID_CONFIGURED"
         
-        if [ "$SECRETS_EXIST" = "true" ]; then
+        # Verify no secrets section exists (to avoid conflict) - fixed jq syntax
+        TASK_LEVEL_SECRETS=$(cat task-definition-final.json | jq 'has("secrets")')
+        CONTAINER_LEVEL_SECRETS=$(cat task-definition-final.json | jq '.containerDefinitions[0] | has("secrets")')
+        
+        echo "Task level secrets exist: $TASK_LEVEL_SECRETS"
+        echo "Container level secrets exist: $CONTAINER_LEVEL_SECRETS"
+        
+        if [ "$TASK_LEVEL_SECRETS" = "true" ] || [ "$CONTAINER_LEVEL_SECRETS" = "true" ]; then
           echo "⚠️  Warning: Secrets section detected - removing to avoid conflicts"
           cat task-definition-final.json | jq 'del(.secrets) | del(.containerDefinitions[0].secrets)' > task-definition-final-clean.json
           mv task-definition-final-clean.json task-definition-final.json
+          echo "✅ Secrets sections removed"
         fi
         
         echo "✅ Task definition validation complete"
