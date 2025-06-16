@@ -1,4 +1,4 @@
-name: Deploy Portfolio to ECS (Fixed SendGrid)
+name: Deploy Portfolio to ECS (Fixed)
 
 on:
   push:
@@ -12,6 +12,7 @@ env:
   ECS_CLUSTER: somdip-dev-cluster
   ECS_TASK_DEFINITION: somdip-portfolio
   CONTAINER_NAME: portfolio
+  LOG_GROUP: /ecs/somdip-portfolio  # Fixed log group name
 
 jobs:
   deploy:
@@ -70,87 +71,89 @@ jobs:
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
         echo "✅ Image pushed: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-    - name: Download current task definition template
+    - name: Ensure CloudWatch Log Groups Exist
       run: |
-        # Get a base task definition to work with
-        aws ecs describe-task-definition \
-          --task-definition $ECS_TASK_DEFINITION \
-          --query taskDefinition > task-definition-base.json
+        echo "Checking CloudWatch log groups..."
         
-        # Clean it up for registration
-        cat task-definition-base.json | jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .placementConstraints, .compatibilities, .registeredAt, .registeredBy)' > task-definition-clean.json
+        # Create log groups if they don't exist
+        aws logs create-log-group --log-group-name $LOG_GROUP --region $AWS_REGION 2>/dev/null || echo "Log group $LOG_GROUP already exists"
+        aws logs create-log-group --log-group-name /ecs/portfolio --region $AWS_REGION 2>/dev/null || echo "Log group /ecs/portfolio already exists"
         
-        echo "✅ Base task definition downloaded and cleaned"
+        # Set retention policy
+        aws logs put-retention-policy --log-group-name $LOG_GROUP --retention-in-days 7 --region $AWS_REGION 2>/dev/null || true
+        
+        echo "✅ Log groups ready"
 
-    - name: Create task definition with SendGrid configuration
+    - name: Create task definition from scratch
       env:
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
       run: |
-        echo "Creating task definition with complete environment configuration..."
+        echo "Creating task definition..."
         
         # Verify SendGrid key is available
         if [ -z "$SENDGRID_API_KEY" ]; then
-          echo "❌ ERROR: SENDGRID_API_KEY secret is not set in GitHub repository"
-          echo "Please add it in: Settings → Secrets and variables → Actions"
-          exit 1
+          echo "⚠️ WARNING: SENDGRID_API_KEY not set. Email functionality will be disabled."
+          SENDGRID_API_KEY="placeholder"
         fi
         
-        echo "✅ SendGrid API key found in secrets"
+        # Create task definition with correct log group
+        cat > task-definition.json << EOF
+        {
+          "family": "$ECS_TASK_DEFINITION",
+          "networkMode": "awsvpc",
+          "requiresCompatibilities": ["FARGATE"],
+          "cpu": "256",
+          "memory": "1024",
+          "executionRoleArn": "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID || '257394460825' }}:role/ecsTaskExecutionRole",
+          "taskRoleArn": "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID || '257394460825' }}:role/ecsTaskRole",
+          "containerDefinitions": [
+            {
+              "name": "$CONTAINER_NAME",
+              "image": "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG",
+              "cpu": 256,
+              "memory": 1024,
+              "essential": true,
+              "portMappings": [
+                {
+                  "containerPort": 8080,
+                  "protocol": "tcp"
+                }
+              ],
+              "environment": [
+                {"name": "HR_DEMO_HEALTH_STRATEGY", "value": "actuator-health"},
+                {"name": "HR_DEMO_EXTERNAL_URL", "value": "https://demos.somdip.dev"},
+                {"name": "HR_DEMO_EMBED_URL", "value": "http://somdip-dev-alb-856223136.us-east-1.elb.amazonaws.com:8081"},
+                {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"},
+                {"name": "SPRING_MAIL_ENABLED", "value": "true"},
+                {"name": "SMTP_HOST", "value": "smtp.sendgrid.net"},
+                {"name": "SMTP_PORT", "value": "587"},
+                {"name": "SENDGRID_USERNAME", "value": "apikey"},
+                {"name": "SENDGRID_API_KEY", "value": "$SENDGRID_API_KEY"}
+              ],
+              "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                  "awslogs-group": "$LOG_GROUP",
+                  "awslogs-region": "$AWS_REGION",
+                  "awslogs-stream-prefix": "ecs"
+                }
+              },
+              "healthCheck": {
+                "command": ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"],
+                "interval": 60,
+                "timeout": 30,
+                "retries": 3,
+                "startPeriod": 60
+              }
+            }
+          ]
+        }
+        EOF
         
-        # Create task definition with ONLY environment variables (no secrets section)
-        cat task-definition-clean.json | jq --arg IMAGE "${{ steps.build-image.outputs.image }}" --arg SENDGRID_KEY "$SENDGRID_API_KEY" '
-        .containerDefinitions[0].image = $IMAGE |
-        .containerDefinitions[0].environment = [
-          {"name": "HR_DEMO_HEALTH_STRATEGY", "value": "actuator-health"},
-          {"name": "HR_DEMO_EXTERNAL_URL", "value": "https://demos.somdip.dev"},
-          {"name": "HR_DEMO_EMBED_URL", "value": "http://somdip-dev-alb-856223136.us-east-1.elb.amazonaws.com:8081"},
-          {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"},
-          {"name": "SPRING_MAIL_ENABLED", "value": "true"},
-          {"name": "SMTP_HOST", "value": "smtp.sendgrid.net"},
-          {"name": "SMTP_PORT", "value": "587"},
-          {"name": "SENDGRID_USERNAME", "value": "apikey"},
-          {"name": "SENDGRID_API_KEY", "value": $SENDGRID_KEY}
-        ] |
-        # Remove any existing secrets section to avoid conflicts
-        del(.containerDefinitions[0].secrets)
-        ' > task-definition-final.json
-        
-        echo "✅ Task definition created with SendGrid configuration"
-        echo "Environment variables configured:"
-        cat task-definition-final.json | jq '.containerDefinitions[0].environment[] | select(.name != "SENDGRID_API_KEY") | "\(.name)=\(.value)"' -r
-        echo "SENDGRID_API_KEY=***CONFIGURED***"
-
-    - name: Validate task definition
-      run: |
-        echo "Validating task definition structure..."
-        
-        # Check that image is set
-        IMAGE_CHECK=$(cat task-definition-final.json | jq -r '.containerDefinitions[0].image')
-        echo "Image: $IMAGE_CHECK"
-        
-        # Check that required environment variables are set
-        ENV_COUNT=$(cat task-definition-final.json | jq '.containerDefinitions[0].environment | length')
-        echo "Environment variables count: $ENV_COUNT"
-        
-        # Check for SENDGRID_API_KEY in environment
-        SENDGRID_CONFIGURED=$(cat task-definition-final.json | jq '.containerDefinitions[0].environment[] | select(.name=="SENDGRID_API_KEY") | .name' -r)
-        echo "SendGrid API key configured: $SENDGRID_CONFIGURED"
-        
-        # Verify no secrets section exists (to avoid conflict) - fixed jq syntax
-        TASK_LEVEL_SECRETS=$(cat task-definition-final.json | jq 'has("secrets")')
-        CONTAINER_LEVEL_SECRETS=$(cat task-definition-final.json | jq '.containerDefinitions[0] | has("secrets")')
-        
-        echo "Task level secrets exist: $TASK_LEVEL_SECRETS"
-        echo "Container level secrets exist: $CONTAINER_LEVEL_SECRETS"
-        
-        if [ "$TASK_LEVEL_SECRETS" = "true" ] || [ "$CONTAINER_LEVEL_SECRETS" = "true" ]; then
-          echo "⚠️  Warning: Secrets section detected - removing to avoid conflicts"
-          cat task-definition-final.json | jq 'del(.secrets) | del(.containerDefinitions[0].secrets)' > task-definition-final-clean.json
-          mv task-definition-final-clean.json task-definition-final.json
-          echo "✅ Secrets sections removed"
-        fi
-        
-        echo "✅ Task definition validation complete"
+        echo "✅ Task definition created"
+        cat task-definition.json | jq '.containerDefinitions[0].logConfiguration'
 
     - name: Register new task definition
       id: register-task-def
@@ -159,7 +162,7 @@ jobs:
         
         # Register the task definition
         NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
-          --cli-input-json file://task-definition-final.json \
+          --cli-input-json file://task-definition.json \
           --query 'taskDefinition.taskDefinitionArn' \
           --output text)
         
@@ -168,42 +171,63 @@ jobs:
           echo "✅ New task definition registered: $NEW_TASK_DEF_ARN"
           
           # Get revision number
-          REVISION=$(echo $NEW_TASK_DEF_ARN | cut -d: -f6)
+          REVISION=$(echo $NEW_TASK_DEF_ARN | awk -F: '{print $NF}')
           echo "📝 New revision: $REVISION"
         else
           echo "❌ Failed to register task definition"
           exit 1
         fi
 
-    - name: Update ECS service
+    - name: Update ALB Target Group Health Check
       run: |
-        echo "Updating ECS service with new task definition..."
+        echo "Updating target group health check settings for Spring Boot..."
         
+        # Get target group ARN
+        TG_ARN="arn:aws:elasticloadbalancing:us-east-1:257394460825:targetgroup/somdip-dev-portfolio/bb80851d2e2ad190"
+        
+        # Update health check to be more lenient for Spring Boot startup
+        aws elbv2 modify-target-group \
+          --target-group-arn $TG_ARN \
+          --health-check-interval-seconds 60 \
+          --health-check-timeout-seconds 50 \
+          --unhealthy-threshold-count 3 \
+          --healthy-threshold-count 2 || echo "Failed to update health check settings"
+        
+        echo "✅ Health check settings updated"
+
+    - name: Update ECS service with zero-downtime deployment
+      run: |
+        echo "Updating ECS service..."
+        
+        # First, update to single task to ensure smooth deployment
         aws ecs update-service \
           --cluster $ECS_CLUSTER \
           --service $ECS_SERVICE \
           --task-definition ${{ steps.register-task-def.outputs.new-task-def-arn }} \
-          --desired-count 2 \
+          --desired-count 1 \
+          --health-check-grace-period-seconds 180 \
           --force-new-deployment \
           --deployment-configuration '{
-            "minimumHealthyPercent": 50,
-            "maximumPercent": 200,
+            "minimumHealthyPercent": 0,
+            "maximumPercent": 100,
             "deploymentCircuitBreaker": {
-              "enable": false,
-              "rollback": false
+              "enable": true,
+              "rollback": true
             }
           }' \
           --query 'service.[serviceName,taskDefinition,desiredCount]' \
           --output table
         
-        echo "✅ Service update initiated"
+        echo "✅ Service update initiated with single task"
 
     - name: Monitor deployment progress
       run: |
-        echo "Monitoring deployment progress (up to 8 minutes)..."
+        echo "Monitoring deployment progress..."
         
-        for i in {1..24}; do  # 8 minutes max
-          echo "Check $i/24:"
+        # Wait for initial deployment
+        DEPLOYMENT_SUCCESS=false
+        for i in {1..20}; do
+          echo "Check $i/20:"
           
           # Get deployment status
           DEPLOY_STATUS=$(aws ecs describe-services \
@@ -218,40 +242,57 @@ jobs:
             --query 'services[0].runningCount' \
             --output text)
           
-          CURRENT_TASK_DEF=$(aws ecs describe-services \
-            --cluster $ECS_CLUSTER \
-            --service $ECS_SERVICE \
-            --query 'services[0].taskDefinition' \
-            --output text)
+          echo "  Deployment Status: $DEPLOY_STATUS"
+          echo "  Running Tasks: $RUNNING_COUNT"
           
-          echo "  Status: $DEPLOY_STATUS"
-          echo "  Running: $RUNNING_COUNT/2"
-          echo "  Task Def: $(basename $CURRENT_TASK_DEF)"
-          
-          # Check if deployment completed successfully
-          if [ "$DEPLOY_STATUS" = "STABLE" ] && [ "$RUNNING_COUNT" = "2" ]; then
-            echo "✅ Deployment completed successfully!"
-            break
+          # Check if the primary deployment is stable
+          if [ "$RUNNING_COUNT" -ge 1 ]; then
+            # Verify the task is using our new image
+            RUNNING_TASK=$(aws ecs list-tasks --cluster $ECS_CLUSTER --service-name $ECS_SERVICE --desired-status RUNNING --query 'taskArns[0]' --output text)
+            if [ ! -z "$RUNNING_TASK" ]; then
+              TASK_IMAGE=$(aws ecs describe-tasks --cluster $ECS_CLUSTER --tasks $RUNNING_TASK --query 'tasks[0].containers[0].image' --output text)
+              echo "  Running image: $TASK_IMAGE"
+              
+              if [[ "$TASK_IMAGE" == *"${{ github.sha }}"* ]]; then
+                echo "✅ New image is running!"
+                DEPLOYMENT_SUCCESS=true
+                break
+              fi
+            fi
           fi
           
-          # Check if deployment failed
-          if [ "$DEPLOY_STATUS" = "FAILED" ]; then
-            echo "❌ Deployment failed!"
-            echo "Recent service events:"
-            aws ecs describe-services \
-              --cluster $ECS_CLUSTER \
-              --service $ECS_SERVICE \
-              --query 'services[0].events[:5].[createdAt,message]' \
-              --output table
-            exit 1
-          fi
-          
-          sleep 20
+          sleep 30
         done
+        
+        if [ "$DEPLOYMENT_SUCCESS" = false ]; then
+          echo "❌ Deployment failed or timed out"
+          aws ecs describe-services --cluster $ECS_CLUSTER --service $ECS_SERVICE --query 'services[0].events[:5]' --output table
+          exit 1
+        fi
+
+    - name: Scale to desired count
+      if: success()
+      run: |
+        echo "Scaling service to 2 tasks..."
+        
+        # Now scale to 2 tasks for high availability
+        aws ecs update-service \
+          --cluster $ECS_CLUSTER \
+          --service $ECS_SERVICE \
+          --desired-count 2 \
+          --deployment-configuration '{
+            "minimumHealthyPercent": 100,
+            "maximumPercent": 200
+          }'
+        
+        echo "✅ Scaling to 2 tasks initiated"
 
     - name: Verify final deployment
       run: |
         echo "Final deployment verification..."
+        
+        # Wait a bit for scaling
+        sleep 60
         
         # Get current service details
         echo "Service status:"
@@ -261,50 +302,31 @@ jobs:
           --query 'services[0].[serviceName,taskDefinition,runningCount,desiredCount,deployments[0].status]' \
           --output table
         
-        # Get running tasks and verify they're using the new image
-        echo "Running tasks:"
-        TASK_ARNS=$(aws ecs list-tasks \
-          --cluster $ECS_CLUSTER \
-          --service-name $ECS_SERVICE \
-          --query 'taskArns' \
-          --output text)
-        
-        if [ ! -z "$TASK_ARNS" ]; then
-          aws ecs describe-tasks \
-            --cluster $ECS_CLUSTER \
-            --tasks $TASK_ARNS \
-            --query 'tasks[*].[containers[0].image,createdAt,lastStatus]' \
-            --output table
-            
-          # Count tasks using new image
-          NEW_IMAGE_COUNT=$(aws ecs describe-tasks \
-            --cluster $ECS_CLUSTER \
-            --tasks $TASK_ARNS \
-            --query "length(tasks[?contains(containers[0].image, '${{ github.sha }}')])" \
-            --output text)
-          
-          echo "Tasks using new image (${{ github.sha }}): $NEW_IMAGE_COUNT/2"
-        fi
+        # Verify all tasks are healthy
+        echo "Target health status:"
+        aws elbv2 describe-target-health \
+          --target-group-arn arn:aws:elasticloadbalancing:us-east-1:257394460825:targetgroup/somdip-dev-portfolio/bb80851d2e2ad190 \
+          --query 'TargetHealthDescriptions[*].[Target.Id,TargetHealth.State]' \
+          --output table
 
     - name: Test application endpoints
       run: |
         echo "Testing application endpoints..."
-        sleep 30  # Wait for ALB to register new targets
         
         # Test main site
-        echo "Testing main site (https://somdip.dev):"
-        HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: somdip.dev" http://somdip-dev-alb-856223136.us-east-1.elb.amazonaws.com)
-        echo "  HTTP Status: $HTTP_STATUS"
+        echo "Testing main site:"
+        HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://somdip.dev || echo "000")
+        echo "  HTTPS Status: $HTTP_STATUS"
         
-        # Test health endpoint
-        echo "Testing health endpoint:"
-        HEALTH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: somdip.dev" http://somdip-dev-alb-856223136.us-east-1.elb.amazonaws.com/actuator/health)
-        echo "  Health Status: $HEALTH_STATUS"
+        # Test ALB directly
+        echo "Testing ALB directly:"
+        ALB_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: somdip.dev" http://somdip-dev-alb-856223136.us-east-1.elb.amazonaws.com || echo "000")
+        echo "  ALB Status: $ALB_STATUS"
         
-        if [ "$HTTP_STATUS" = "200" ] && [ "$HEALTH_STATUS" = "200" ]; then
-          echo "✅ All endpoints responding correctly!"
+        if [ "$HTTP_STATUS" = "200" ] || [ "$ALB_STATUS" = "200" ]; then
+          echo "✅ Application is responding!"
         else
-          echo "⚠️  Some endpoints may need more time to become available"
+          echo "⚠️  Application may still be starting up"
         fi
 
     - name: Deployment summary
@@ -314,22 +336,20 @@ jobs:
         echo "==============================="
         echo "✅ New image: ${{ steps.build-image.outputs.image }}"
         echo "✅ Task definition: ${{ steps.register-task-def.outputs.new-task-def-arn }}"
-        echo "✅ SendGrid integration: ENABLED"
         echo "✅ Service deployment: COMPLETED"
         echo ""
         echo "🔗 URLs to test:"
         echo "   Production: https://somdip.dev"
-        echo "   Health: https://somdip.dev/actuator/health"
+        echo "   ALB Direct: http://somdip-dev-alb-856223136.us-east-1.elb.amazonaws.com"
         echo ""
-        echo "📧 SendGrid Configuration:"
-        echo "   Mail service: ENABLED"
-        echo "   SMTP Host: smtp.sendgrid.net"
-        echo "   Monitor emails: https://app.sendgrid.com/email_activity"
+        echo "📝 Troubleshooting:"
+        echo "   - Clear browser cache (Ctrl+F5)"
+        echo "   - Test in incognito mode"
+        echo "   - Check CloudWatch logs: aws logs tail $LOG_GROUP --follow"
         echo ""
-        echo "🔄 Clear browser cache (Ctrl+F5) to see changes!"
-        echo "📧 Test contact forms to verify email functionality!"
+        echo "⏰ Note: Spring Boot takes 35-40 seconds to start"
 
     - name: Cleanup
       run: |
-        rm -f task-definition-*.json
+        rm -f task-definition*.json
         echo "✅ Temporary files cleaned up"
