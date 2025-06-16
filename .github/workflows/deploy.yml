@@ -1,4 +1,4 @@
-name: Deploy Portfolio to ECS
+name: Deploy Portfolio Service to ECS
 
 on:
   push:
@@ -79,14 +79,25 @@ jobs:
         
         # Clean it up for registration
         cat task-definition-base.json | jq 'del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .placementConstraints, .compatibilities, .registeredAt, .registeredBy)' > task-definition-clean.json
+        
+        echo "✅ Base task definition downloaded and cleaned"
 
-    - name: Create task definition with complete environment
+    - name: Create task definition with SendGrid configuration
       env:
         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
       run: |
         echo "Creating task definition with complete environment configuration..."
         
-        # Create task definition with all required environment variables
+        # Verify SendGrid key is available
+        if [ -z "$SENDGRID_API_KEY" ]; then
+          echo "❌ ERROR: SENDGRID_API_KEY secret is not set in GitHub repository"
+          echo "Please add it in: Settings → Secrets and variables → Actions"
+          exit 1
+        fi
+        
+        echo "✅ SendGrid API key found in secrets"
+        
+        # Create task definition with ONLY environment variables (no secrets section)
         cat task-definition-clean.json | jq --arg IMAGE "${{ steps.build-image.outputs.image }}" --arg SENDGRID_KEY "$SENDGRID_API_KEY" '
         .containerDefinitions[0].image = $IMAGE |
         .containerDefinitions[0].environment = [
@@ -99,31 +110,62 @@ jobs:
           {"name": "SMTP_PORT", "value": "587"},
           {"name": "SENDGRID_USERNAME", "value": "apikey"},
           {"name": "SENDGRID_API_KEY", "value": $SENDGRID_KEY}
-        ]' > task-definition-final.json
+        ] |
+        # Remove any existing secrets section to avoid conflicts
+        del(.containerDefinitions[0].secrets)
+        ' > task-definition-final.json
         
         echo "✅ Task definition created with SendGrid configuration"
         echo "Environment variables configured:"
         cat task-definition-final.json | jq '.containerDefinitions[0].environment[] | select(.name != "SENDGRID_API_KEY") | "\(.name)=\(.value)"' -r
-        echo "SENDGRID_API_KEY=***HIDDEN***"
+        echo "SENDGRID_API_KEY=***CONFIGURED***"
+
+    - name: Validate task definition
+      run: |
+        echo "Validating task definition structure..."
+        
+        # Check that image is set
+        IMAGE_CHECK=$(cat task-definition-final.json | jq -r '.containerDefinitions[0].image')
+        echo "Image: $IMAGE_CHECK"
+        
+        # Check that required environment variables are set
+        ENV_COUNT=$(cat task-definition-final.json | jq '.containerDefinitions[0].environment | length')
+        echo "Environment variables count: $ENV_COUNT"
+        
+        # Verify no secrets section exists (to avoid conflict)
+        SECRETS_EXIST=$(cat task-definition-final.json | jq 'has("secrets") or .containerDefinitions[0] | has("secrets")')
+        echo "Secrets section exists: $SECRETS_EXIST"
+        
+        if [ "$SECRETS_EXIST" = "true" ]; then
+          echo "⚠️  Warning: Secrets section detected - removing to avoid conflicts"
+          cat task-definition-final.json | jq 'del(.secrets) | del(.containerDefinitions[0].secrets)' > task-definition-final-clean.json
+          mv task-definition-final-clean.json task-definition-final.json
+        fi
+        
+        echo "✅ Task definition validation complete"
 
     - name: Register new task definition
       id: register-task-def
       run: |
         echo "Registering new task definition..."
+        
+        # Register the task definition
         NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
           --cli-input-json file://task-definition-final.json \
           --query 'taskDefinition.taskDefinitionArn' \
           --output text)
         
-        echo "new-task-def-arn=$NEW_TASK_DEF_ARN" >> $GITHUB_OUTPUT
-        echo "✅ New task definition registered: $NEW_TASK_DEF_ARN"
-        
-        # Verify the new task definition
-        echo "Verifying new task definition configuration:"
-        aws ecs describe-task-definition \
-          --task-definition $NEW_TASK_DEF_ARN \
-          --query 'taskDefinition.containerDefinitions[0].[image,environment[?name==`SPRING_MAIL_ENABLED`]]' \
-          --output text
+        if [ $? -eq 0 ]; then
+          echo "new-task-def-arn=$NEW_TASK_DEF_ARN" >> $GITHUB_OUTPUT
+          echo "✅ New task definition registered: $NEW_TASK_DEF_ARN"
+          
+          # Get revision number
+          REVISION=$(echo $NEW_TASK_DEF_ARN | cut -d: -f6)
+          echo "📝 New revision: $REVISION"
+        else
+          echo "❌ Failed to register task definition"
+          exit 1
+        fi
 
     - name: Update ECS service
       run: |
@@ -150,10 +192,10 @@ jobs:
 
     - name: Monitor deployment progress
       run: |
-        echo "Monitoring deployment progress (up to 10 minutes)..."
+        echo "Monitoring deployment progress (up to 8 minutes)..."
         
-        for i in {1..30}; do  # 10 minutes max
-          echo "Check $i/30:"
+        for i in {1..24}; do  # 8 minutes max
+          echo "Check $i/24:"
           
           # Get deployment status
           DEPLOY_STATUS=$(aws ecs describe-services \
@@ -178,7 +220,7 @@ jobs:
           echo "  Running: $RUNNING_COUNT/2"
           echo "  Task Def: $(basename $CURRENT_TASK_DEF)"
           
-          # Check if using new task definition and all tasks running
+          # Check if deployment completed successfully
           if [ "$DEPLOY_STATUS" = "STABLE" ] && [ "$RUNNING_COUNT" = "2" ]; then
             echo "✅ Deployment completed successfully!"
             break
@@ -187,6 +229,7 @@ jobs:
           # Check if deployment failed
           if [ "$DEPLOY_STATUS" = "FAILED" ]; then
             echo "❌ Deployment failed!"
+            echo "Recent service events:"
             aws ecs describe-services \
               --cluster $ECS_CLUSTER \
               --service $ECS_SERVICE \
@@ -203,14 +246,14 @@ jobs:
         echo "Final deployment verification..."
         
         # Get current service details
-        echo "Service details:"
+        echo "Service status:"
         aws ecs describe-services \
           --cluster $ECS_CLUSTER \
           --service $ECS_SERVICE \
           --query 'services[0].[serviceName,taskDefinition,runningCount,desiredCount,deployments[0].status]' \
           --output table
         
-        # Get running tasks and their images
+        # Get running tasks and verify they're using the new image
         echo "Running tasks:"
         TASK_ARNS=$(aws ecs list-tasks \
           --cluster $ECS_CLUSTER \
@@ -224,15 +267,24 @@ jobs:
             --tasks $TASK_ARNS \
             --query 'tasks[*].[containers[0].image,createdAt,lastStatus]' \
             --output table
+            
+          # Count tasks using new image
+          NEW_IMAGE_COUNT=$(aws ecs describe-tasks \
+            --cluster $ECS_CLUSTER \
+            --tasks $TASK_ARNS \
+            --query "length(tasks[?contains(containers[0].image, '${{ github.sha }}')])" \
+            --output text)
+          
+          echo "Tasks using new image (${{ github.sha }}): $NEW_IMAGE_COUNT/2"
         fi
 
-    - name: Test endpoints
+    - name: Test application endpoints
       run: |
         echo "Testing application endpoints..."
         sleep 30  # Wait for ALB to register new targets
         
         # Test main site
-        echo "Testing main site:"
+        echo "Testing main site (https://somdip.dev):"
         HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -H "Host: somdip.dev" http://somdip-dev-alb-856223136.us-east-1.elb.amazonaws.com)
         echo "  HTTP Status: $HTTP_STATUS"
         
@@ -244,7 +296,7 @@ jobs:
         if [ "$HTTP_STATUS" = "200" ] && [ "$HEALTH_STATUS" = "200" ]; then
           echo "✅ All endpoints responding correctly!"
         else
-          echo "⚠️  Some endpoints may need more time"
+          echo "⚠️  Some endpoints may need more time to become available"
         fi
 
     - name: Deployment summary
@@ -252,22 +304,24 @@ jobs:
         echo ""
         echo "🚀 Portfolio Deployment Summary"
         echo "==============================="
-        echo "✅ Image built and pushed: ${{ steps.build-image.outputs.image }}"
-        echo "✅ Task definition created: ${{ steps.register-task-def.outputs.new-task-def-arn }}"
-        echo "✅ SendGrid mail configuration: ENABLED"
-        echo "✅ Service updated successfully"
+        echo "✅ New image: ${{ steps.build-image.outputs.image }}"
+        echo "✅ Task definition: ${{ steps.register-task-def.outputs.new-task-def-arn }}"
+        echo "✅ SendGrid integration: ENABLED"
+        echo "✅ Service deployment: COMPLETED"
         echo ""
-        echo "🔗 Test your changes:"
+        echo "🔗 URLs to test:"
         echo "   Production: https://somdip.dev"
-        echo "   Health Check: https://somdip.dev/actuator/health"
+        echo "   Health: https://somdip.dev/actuator/health"
         echo ""
-        echo "📧 SendGrid Integration:"
-        echo "   Status: ACTIVE"
-        echo "   Monitor: https://app.sendgrid.com/email_activity"
+        echo "📧 SendGrid Configuration:"
+        echo "   Mail service: ENABLED"
+        echo "   SMTP Host: smtp.sendgrid.net"
+        echo "   Monitor emails: https://app.sendgrid.com/email_activity"
         echo ""
-        echo "🔍 Clear browser cache (Ctrl+F5) to see the latest changes!"
+        echo "🔄 Clear browser cache (Ctrl+F5) to see changes!"
+        echo "📧 Test contact forms to verify email functionality!"
 
-    - name: Cleanup temporary files
+    - name: Cleanup
       run: |
         rm -f task-definition-*.json
-        echo "✅ Cleanup complete"
+        echo "✅ Temporary files cleaned up"
