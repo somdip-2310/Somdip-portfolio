@@ -4,39 +4,344 @@
     <!-- Technology Architecture Fragment -->
     <section th:fragment="tech-architecture" class="py-16 bg-gray-50">
         <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Technology Architecture & Stack</h2>
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Technology Architecture & AI Agent Flow</h2>
             
-            <!-- Architecture Diagram -->
+            <!-- AI Agent Architecture Flow - MOVED HERE -->
             <div class="bg-white p-8 rounded-xl shadow-lg mb-8">
-                <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center">AI Processing Pipeline</h3>
-                <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
-                    <div class="bg-blue-100 p-4 rounded-lg text-center flex-1">
-                        <i class="fas fa-upload text-blue-600 text-2xl mb-2"></i>
-                        <h4 class="font-semibold text-gray-800">Upload</h4>
-                        <p class="text-sm text-gray-600">Resume Upload via Web Interface</p>
-                    </div>
-                    <i class="fas fa-arrow-right text-gray-400 hidden md:block"></i>
-                    <div class="bg-green-100 p-4 rounded-lg text-center flex-1">
-                        <i class="fas fa-cloud text-green-600 text-2xl mb-2"></i>
-                        <h4 class="font-semibold text-gray-800">AWS S3</h4>
-                        <p class="text-sm text-gray-600">Secure Document Storage</p>
-                    </div>
-                    <i class="fas fa-arrow-right text-gray-400 hidden md:block"></i>
-                    <div class="bg-purple-100 p-4 rounded-lg text-center flex-1">
-                        <i class="fas fa-eye text-purple-600 text-2xl mb-2"></i>
-                        <h4 class="font-semibold text-gray-800">Textract</h4>
-                        <p class="text-sm text-gray-600">OCR Text Extraction</p>
-                    </div>
-                    <i class="fas fa-arrow-right text-gray-400 hidden md:block"></i>
-                    <div class="bg-orange-100 p-4 rounded-lg text-center flex-1">
-                        <i class="fas fa-brain text-orange-600 text-2xl mb-2"></i>
-                        <h4 class="font-semibold text-gray-800">Bedrock</h4>
-                        <p class="text-sm text-gray-600">AI Analysis & Matching</p>
+                <h3 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
+                    <i class="fas fa-brain text-purple-600 mr-2"></i>
+                    Agentic AI Workflow
+                </h3>
+                <p class="text-gray-600 text-center mb-8 max-w-4xl mx-auto">
+                    Multiple specialized AI agents work autonomously and collaboratively to process resumes and make hiring decisions. Each agent has specific responsibilities and can make independent decisions while contributing to the overall recruitment workflow.
+                </p>
+                
+                <!-- SVG-based Professional Diagram with FIXED animations -->
+                <div class="relative max-w-5xl mx-auto">
+                    <svg viewBox="0 0 1200 700" class="w-full h-auto" id="aiWorkflowDiagram">
+                        <!-- Define gradients and filters -->
+                        <defs>
+                            <!-- Gradient definitions -->
+                            <linearGradient id="inputGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ef4444;stop-opacity:0.8" />
+                                <stop offset="100%" style="stop-color:#dc2626;stop-opacity:0.8" />
+                            </linearGradient>
+                            
+                            <linearGradient id="documentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.8" />
+                                <stop offset="100%" style="stop-color:#2563eb;stop-opacity:0.8" />
+                            </linearGradient>
+                            
+                            <linearGradient id="skillsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.8" />
+                                <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:0.8" />
+                            </linearGradient>
+                            
+                            <linearGradient id="experienceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.8" />
+                                <stop offset="100%" style="stop-color:#059669;stop-opacity:0.8" />
+                            </linearGradient>
+                            
+                            <linearGradient id="orchestratorGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:0.8" />
+                                <stop offset="100%" style="stop-color:#d97706;stop-opacity:0.8" />
+                            </linearGradient>
+                            
+                            <linearGradient id="matchingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0.8" />
+                                <stop offset="100%" style="stop-color:#db2777;stop-opacity:0.8" />
+                            </linearGradient>
+                            
+                            <linearGradient id="rankingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.8" />
+                                <stop offset="100%" style="stop-color:#4f46e5;stop-opacity:0.8" />
+                            </linearGradient>
+                            
+                            <!-- Arrow marker -->
+                            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                <polygon points="0 0, 10 5, 0 10" fill="#6b7280"/>
+                            </marker>
+                        </defs>
+                        
+                        <!-- Background -->
+                        <rect x="0" y="0" width="1200" height="700" fill="#f9fafb" rx="10"/>
+                        
+                        <!-- Title -->
+                        <text x="600" y="40" text-anchor="middle" font-size="24" font-weight="bold" fill="#374151">Agentic AI Processing Pipeline</text>
+                        
+                        <!-- PDF Resume Input -->
+                        <g transform="translate(50, 300)">
+                            <rect x="0" y="0" width="180" height="100" rx="15" fill="url(#inputGradient)"/>
+                            <rect x="10" y="10" width="160" height="80" rx="10" fill="white" opacity="0.9"/>
+                            <text x="90" y="40" text-anchor="middle" font-size="16" font-weight="bold" fill="#374151">PDF Resume</text>
+                            <text x="90" y="60" text-anchor="middle" font-size="14" fill="#6b7280">Input Document</text>
+                            <text x="90" y="80" text-anchor="middle" font-size="12" fill="#dc2626">📄 User Upload</text>
+                        </g>
+                        
+                        <!-- Document Agent -->
+                        <g transform="translate(300, 100)">
+                            <rect x="0" y="0" width="200" height="120" rx="15" fill="url(#documentGradient)"/>
+                            <rect x="10" y="10" width="180" height="100" rx="10" fill="white" opacity="0.9"/>
+                            <circle cx="100" cy="35" r="18" fill="#3b82f6"/>
+                            <text x="100" y="40" text-anchor="middle" font-size="14" font-weight="bold" fill="white">🤖</text>
+                            <text x="100" y="65" text-anchor="middle" font-size="16" font-weight="bold" fill="#374151">Document Agent</text>
+                            <text x="100" y="85" text-anchor="middle" font-size="12" fill="#6b7280">AWS Textract OCR</text>
+                            <text x="100" y="100" text-anchor="middle" font-size="12" fill="#2563eb">📝 Raw Text Output</text>
+                        </g>
+                        
+                        <!-- Skills Agent -->
+                        <g transform="translate(300, 290)">
+                            <rect x="0" y="0" width="200" height="120" rx="15" fill="url(#skillsGradient)"/>
+                            <rect x="10" y="10" width="180" height="100" rx="10" fill="white" opacity="0.9"/>
+                            <circle cx="100" cy="35" r="18" fill="#8b5cf6"/>
+                            <text x="100" y="40" text-anchor="middle" font-size="14" font-weight="bold" fill="white">🧠</text>
+                            <text x="100" y="65" text-anchor="middle" font-size="16" font-weight="bold" fill="#374151">Skills Agent</text>
+                            <text x="100" y="85" text-anchor="middle" font-size="12" fill="#6b7280">Amazon Bedrock</text>
+                            <text x="100" y="100" text-anchor="middle" font-size="12" fill="#7c3aed">🎯 Structured Skills</text>
+                        </g>
+                        
+                        <!-- Experience Agent -->
+                        <g transform="translate(300, 480)">
+                            <rect x="0" y="0" width="200" height="120" rx="15" fill="url(#experienceGradient)"/>
+                            <rect x="10" y="10" width="180" height="100" rx="10" fill="white" opacity="0.9"/>
+                            <circle cx="100" cy="35" r="18" fill="#10b981"/>
+                            <text x="100" y="40" text-anchor="middle" font-size="14" font-weight="bold" fill="white">📊</text>
+                            <text x="100" y="65" text-anchor="middle" font-size="16" font-weight="bold" fill="#374151">Experience Agent</text>
+                            <text x="100" y="85" text-anchor="middle" font-size="12" fill="#6b7280">Level Classification</text>
+                            <text x="100" y="100" text-anchor="middle" font-size="12" fill="#059669">📈 Experience Level</text>
+                        </g>
+                        
+                        <!-- Orchestrator Agent (Central) -->
+                        <g transform="translate(550, 250)">
+                            <rect x="0" y="0" width="220" height="200" rx="20" fill="url(#orchestratorGradient)" stroke="#f59e0b" stroke-width="3"/>
+                            <rect x="15" y="15" width="190" height="170" rx="15" fill="white" opacity="0.95"/>
+                            <circle cx="110" cy="50" r="25" fill="#f59e0b"/>
+                            <text x="110" y="57" text-anchor="middle" font-size="18" font-weight="bold" fill="white">🎯</text>
+                            <text x="110" y="85" text-anchor="middle" font-size="18" font-weight="bold" fill="#374151">Orchestrator</text>
+                            <text x="110" y="105" text-anchor="middle" font-size="16" font-weight="bold" fill="#374151">Agent</text>
+                            <text x="110" y="130" text-anchor="middle" font-size="12" fill="#6b7280">Coordination & Decision</text>
+                            <text x="110" y="150" text-anchor="middle" font-size="12" fill="#d97706">🔄 Workflow Management</text>
+                            <text x="110" y="175" text-anchor="middle" font-size="12" font-weight="600" fill="#92400e">Intelligent Coordination</text>
+                        </g>
+                        
+                        <!-- Matching Agent -->
+                        <g transform="translate(850, 150)">
+                            <rect x="0" y="0" width="200" height="120" rx="15" fill="url(#matchingGradient)"/>
+                            <rect x="10" y="10" width="180" height="100" rx="10" fill="white" opacity="0.9"/>
+                            <circle cx="100" cy="35" r="18" fill="#ec4899"/>
+                            <text x="100" y="40" text-anchor="middle" font-size="14" font-weight="bold" fill="white">🎯</text>
+                            <text x="100" y="65" text-anchor="middle" font-size="16" font-weight="bold" fill="#374151">Matching Agent</text>
+                            <text x="100" y="85" text-anchor="middle" font-size="12" fill="#6b7280">Job-Candidate</text>
+                            <text x="100" y="100" text-anchor="middle" font-size="12" fill="#db2777">💼 Match Scores</text>
+                        </g>
+                        
+                        <!-- Ranking Agent -->
+                        <g transform="translate(850, 430)">
+                            <rect x="0" y="0" width="200" height="120" rx="15" fill="url(#rankingGradient)"/>
+                            <rect x="10" y="10" width="180" height="100" rx="10" fill="white" opacity="0.9"/>
+                            <circle cx="100" cy="35" r="18" fill="#6366f1"/>
+                            <text x="100" y="40" text-anchor="middle" font-size="14" font-weight="bold" fill="white">🏆</text>
+                            <text x="100" y="65" text-anchor="middle" font-size="16" font-weight="bold" fill="#374151">Ranking Agent</text>
+                            <text x="100" y="85" text-anchor="middle" font-size="12" fill="#6b7280">Score Optimization</text>
+                            <text x="100" y="100" text-anchor="middle" font-size="12" fill="#4f46e5">🥇 Final Rankings</text>
+                        </g>
+                        
+                        <!-- Decision Output -->
+                        <g transform="translate(1100, 290)">
+                            <circle cx="50" cy="50" r="40" fill="#10b981"/>
+                            <text x="50" y="45" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Decision</text>
+                            <text x="50" y="65" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Output</text>
+                        </g>
+                        
+                        <!-- FIXED Animated flow arrows -->
+                        <g class="flow-arrows">
+                            <!-- Input to agents -->
+                            <path d="M 230 350 L 290 160" stroke="#3b82f6" stroke-width="3" fill="none" marker-end="url(#arrowhead)" opacity="0.8">
+                                <animate attributeName="stroke-dasharray" values="0,10;10,0" dur="2s" repeatCount="indefinite"/>
+                            </path>
+                            <path d="M 230 350 L 290 350" stroke="#8b5cf6" stroke-width="3" fill="none" marker-end="url(#arrowhead)" opacity="0.8">
+                                <animate attributeName="stroke-dasharray" values="0,10;10,0" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+                            </path>
+                            <path d="M 230 350 L 290 540" stroke="#10b981" stroke-width="3" fill="none" marker-end="url(#arrowhead)" opacity="0.8">
+                                <animate attributeName="stroke-dasharray" values="0,10;10,0" dur="2s" begin="1s" repeatCount="indefinite"/>
+                            </path>
+                            
+                            <!-- Agents to orchestrator -->
+                            <path d="M 500 160 L 550 300" stroke="#f59e0b" stroke-width="3" fill="none" marker-end="url(#arrowhead)" opacity="0.8">
+                                <animate attributeName="stroke-dasharray" values="0,10;10,0" dur="2s" begin="1.5s" repeatCount="indefinite"/>
+                            </path>
+                            <path d="M 500 350 L 550 350" stroke="#f59e0b" stroke-width="3" fill="none" marker-end="url(#arrowhead)" opacity="0.8">
+                                <animate attributeName="stroke-dasharray" values="0,10;10,0" dur="2s" begin="2s" repeatCount="indefinite"/>
+                            </path>
+                            <path d="M 500 540 L 550 400" stroke="#f59e0b" stroke-width="3" fill="none" marker-end="url(#arrowhead)" opacity="0.8">
+                                <animate attributeName="stroke-dasharray" values="0,10;10,0" dur="2s" begin="2.5s" repeatCount="indefinite"/>
+                            </path>
+                            
+                            <!-- Orchestrator to output agents -->
+                            <path d="M 770 300 L 840 210" stroke="#ec4899" stroke-width="3" fill="none" marker-end="url(#arrowhead)" opacity="0.8">
+                                <animate attributeName="stroke-dasharray" values="0,10;10,0" dur="2s" begin="3s" repeatCount="indefinite"/>
+                            </path>
+                            <path d="M 770 400 L 840 490" stroke="#6366f1" stroke-width="3" fill="none" marker-end="url(#arrowhead)" opacity="0.8">
+                                <animate attributeName="stroke-dasharray" values="0,10;10,0" dur="2s" begin="3.5s" repeatCount="indefinite"/>
+                            </path>
+                            
+                            <!-- Output agents to final -->
+                            <path d="M 1050 210 L 1100 300" stroke="#10b981" stroke-width="3" fill="none" marker-end="url(#arrowhead)" opacity="0.8">
+                                <animate attributeName="stroke-dasharray" values="0,10;10,0" dur="2s" begin="4s" repeatCount="indefinite"/>
+                            </path>
+                            <path d="M 1050 490 L 1100 340" stroke="#10b981" stroke-width="3" fill="none" marker-end="url(#arrowhead)" opacity="0.8">
+                                <animate attributeName="stroke-dasharray" values="0,10;10,0" dur="2s" begin="4.5s" repeatCount="indefinite"/>
+                            </path>
+                        </g>
+                        
+                        <!-- Labels -->
+                        <text x="140" y="280" text-anchor="middle" font-size="12" font-weight="600" fill="#2563eb">Document Processing</text>
+                        <text x="950" y="350" text-anchor="middle" font-size="12" font-weight="600" fill="#7c3aed">Decision Output</text>
+                    </svg>
+                    
+                    <!-- Legend -->
+                    <div class="mt-8 bg-gray-50 rounded-lg p-4">
+                        <h4 class="text-sm font-semibold text-gray-700 mb-3">Process Flow</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-xs">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-red-500 rounded mr-2"></div>
+                                <span>1. Input</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-blue-500 rounded mr-2"></div>
+                                <span>2. Text Extraction</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-purple-500 rounded mr-2"></div>
+                                <span>3. Analysis</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-orange-500 rounded mr-2"></div>
+                                <span>4. Coordination</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-green-500 rounded mr-2"></div>
+                                <span>5. Output</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Technology Stack Details -->
+            <!-- Agent Capabilities Grid -->
+            <div class="bg-white p-8 rounded-xl shadow-lg mb-8">
+                <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center">
+                    <i class="fas fa-cogs text-orange-500 mr-2"></i>
+                    AI Agent Capabilities
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border-l-4 border-blue-500">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">
+                            <i class="fas fa-eye text-blue-500 mr-2"></i>
+                            Document Processing Agent
+                        </h4>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Autonomous PDF text extraction</li>
+                            <li>• Error handling & validation</li>
+                            <li>• Format standardization</li>
+                            <li>• Quality assessment</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border-l-4 border-purple-500">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">
+                            <i class="fas fa-brain text-purple-500 mr-2"></i>
+                            Skills Analysis Agent
+                        </h4>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• NLP-powered skill extraction</li>
+                            <li>• Technical vs soft skill classification</li>
+                            <li>• Skill relevance scoring</li>
+                            <li>• Context-aware interpretation</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border-l-4 border-green-500">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">
+                            <i class="fas fa-chart-line text-green-500 mr-2"></i>
+                            Experience Classification Agent
+                        </h4>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Career progression analysis</li>
+                            <li>• Years of experience calculation</li>
+                            <li>• Role complexity assessment</li>
+                            <li>• Leadership indicator detection</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg border-l-4 border-orange-500">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">
+                            <i class="fas fa-cogs text-orange-500 mr-2"></i>
+                            Orchestrator Agent
+                        </h4>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Workflow coordination</li>
+                            <li>• Agent communication management</li>
+                            <li>• Decision conflict resolution</li>
+                            <li>• Performance optimization</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-pink-50 to-pink-100 p-4 rounded-lg border-l-4 border-pink-500">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">
+                            <i class="fas fa-search text-pink-500 mr-2"></i>
+                            Matching Agent
+                        </h4>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Job-candidate compatibility scoring</li>
+                            <li>• Multi-criteria decision analysis</li>
+                            <li>• Requirement gap identification</li>
+                            <li>• Weighted preference matching</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 p-4 rounded-lg border-l-4 border-indigo-500">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">
+                            <i class="fas fa-trophy text-indigo-500 mr-2"></i>
+                            Ranking Agent
+                        </h4>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Dynamic score optimization</li>
+                            <li>• Contextual ranking algorithms</li>
+                            <li>• Bias detection & mitigation</li>
+                            <li>• Explainable AI recommendations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why Agentic AI Benefits -->
+            <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-8 border border-green-200 shadow-lg mb-8">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
+                    <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                    Why Agentic AI?
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                        <h4 class="text-lg font-medium text-gray-800 mb-3">🎯 Autonomous Decision Making</h4>
+                        <p class="text-gray-600">Each agent makes independent decisions within its domain of expertise, reducing bottlenecks and improving processing speed.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                        <h4 class="text-lg font-medium text-gray-800 mb-3">🔄 Scalable Architecture</h4>
+                        <p class="text-gray-600">Agents can be scaled independently based on workload, allowing optimal resource allocation and system performance.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                        <h4 class="text-lg font-medium text-gray-800 mb-3">🛠️ Specialized Expertise</h4>
+                        <p class="text-gray-600">Each agent is optimized for specific tasks, leading to higher accuracy and better outcomes than monolithic systems.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                        <h4 class="text-lg font-medium text-gray-800 mb-3">🔍 Explainable Results</h4>
+                        <p class="text-gray-600">Agent-based decisions provide clear audit trails and explanations for hiring recommendations and scoring.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Original Technology Stack Details -->
             <div class="grid md:grid-cols-4 gap-6">
                 <div class="bg-white p-6 rounded-xl shadow text-center hover:shadow-lg transition-shadow">
                     <i class="fas fa-code text-blue-600 text-3xl mb-3"></i>

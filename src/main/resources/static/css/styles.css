@@ -1,0 +1,34 @@
+/* AI Workflow Diagram Animations */
+#aiWorkflowDiagram .flow-arrows path {
+    stroke-dasharray: 10, 5;
+}
+
+/* Alternative fallback animation using CSS */
+@keyframes flowAnimation {
+    0% {
+        stroke-dashoffset: 15;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Apply CSS animation as fallback */
+.flow-arrows path {
+    animation: flowAnimation 2s linear infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #aiWorkflowDiagram {
+        height: 400px;
+    }
+    
+    #aiWorkflowDiagram text {
+        font-size: 10px;
+    }
+    
+    #aiWorkflowDiagram .flow-arrows path {
+        stroke-width: 2;
+    }
+}
