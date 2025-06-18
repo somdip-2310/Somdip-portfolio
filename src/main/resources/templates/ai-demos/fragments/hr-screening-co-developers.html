@@ -1,0 +1,139 @@
+<!-- Co-Developers Section Fragment -->
+<div th:fragment="co-developers" class="py-12 bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Built by Team-7</h2>
+            <p class="text-gray-600">AWS Hackathon 2025 - HR Hiring Agent</p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Somdip Roy -->
+            <div class="group relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+                <div class="relative bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
+                                <span class="text-xl font-bold">SR</span>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900">Somdip Roy</h3>
+                            <p class="text-sm text-blue-600 font-medium">Lead Developer</p>
+                            <p class="text-xs text-gray-500 mt-1">AWS Solutions Architect</p>
+                        </div>
+                        <div>
+                            <a href="/contact" 
+                               class="text-gray-400 hover:text-blue-600 transition-colors"
+                               title="Contact Somdip">
+                                <i class="fas fa-envelope text-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Manish Kalpande -->
+            <div class="group relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-green-400 to-teal-400 rounded-lg blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+                <div class="relative bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center text-white shadow-lg">
+                                <span class="text-xl font-bold">MK</span>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900">Manish Kalpande</h3>
+                            <p class="text-sm text-green-600 font-medium">Full Stack Developer</p>
+                            <p class="text-xs text-gray-500 mt-1">Spring Boot & AWS</p>
+                        </div>
+                        <div>
+                            <a href="https://www.linkedin.com/in/manish-kalpande-3697411a5" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               class="text-gray-400 hover:text-blue-600 transition-colors"
+                               title="LinkedIn Profile">
+                                <i class="fab fa-linkedin text-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Akshay Raval -->
+            <div class="group relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-orange-400 to-pink-400 rounded-lg blur opacity-25 group-hover:opacity-40 transition duration-300"></div>
+                <div class="relative bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-white shadow-lg">
+                                <span class="text-xl font-bold">AR</span>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-gray-900">Akshay Raval</h3>
+                            <p class="text-sm text-orange-600 font-medium">Backend Developer</p>
+                            <p class="text-xs text-gray-500 mt-1">AI/ML & Bedrock</p>
+                        </div>
+                        <div>
+                            <a href="https://www.linkedin.com/in/akshayraval369" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               class="text-gray-400 hover:text-blue-600 transition-colors"
+                               title="LinkedIn Profile">
+                                <i class="fab fa-linkedin text-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Compact Achievement Banner -->
+        <div class="mt-8 text-center">
+            <div class="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-sm">
+                <span class="text-yellow-500">
+                    <i class="fas fa-trophy"></i>
+                </span>
+                <span class="text-sm font-medium text-gray-700">
+                    AWS Hackathon 2025 • Team-6 • HR Hiring Agent
+                </span>
+                <span class="text-yellow-500">
+                    <i class="fas fa-trophy"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Smooth transitions and hover effects */
+.group:hover .group-hover\:opacity-40 {
+    opacity: 0.4;
+}
+
+/* Subtle animation on load */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.group {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.group:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.group:nth-child(3) {
+    animation-delay: 0.2s;
+}
+</style>
