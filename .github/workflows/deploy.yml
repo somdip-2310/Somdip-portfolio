@@ -92,9 +92,11 @@ jobs:
               "environment": [
                 {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"},
                 {"name": "SERVER_PORT", "value": "8080"},
+                {"name": "SPRING_PROFILES_ACTIVE", "value": "prod"},
+                {"name": "SERVER_PORT", "value": "8080"},
                 {"name": "SENDGRID_ENABLED", "value": "true"},
                 {"name": "SENDGRID_API_KEY", "value": "$SENDGRID_API_KEY"},
-                {"name": "SENDGRID_FROM_EMAIL", "value": "somdiproy.roy@gmail.com"},
+                {"name": "SENDGRID_FROM_EMAIL", "value": "contact@somdip.dev"},
                 {"name": "SENDGRID_FROM_NAME", "value": "Somdip Roy Portfolio"},
                 {"name": "SENDGRID_TO_EMAIL", "value": "somdiproy.roy@gmail.com"},
                 {"name": "SENDGRID_TO_NAME", "value": "Somdip Roy"},
