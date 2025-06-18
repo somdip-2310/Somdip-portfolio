@@ -1,229 +1,204 @@
 package com.somdiproy.portfolio.service;
 
 import com.somdiproy.portfolio.model.ContactForm;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.logging.Logger;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-/**
- * Email service for handling contact form submissions
- * Updated to work with simplified ContactForm and conditional email configuration
- */
 @Service
 public class EmailService {
     
-    private static final Logger logger = Logger.getLogger(EmailService.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
     
-    // Make JavaMailSender optional to prevent startup failures
-    @Autowired(required = false)
-    private JavaMailSender mailSender;
+    @Value("${sendgrid.api.key:}")
+    private String sendGridApiKey;
     
-    @Value("${spring.mail.username:}")
+    @Value("${sendgrid.enabled:false}")
+    private boolean sendGridEnabled;
+    
+    @Value("${sendgrid.from.email:somdiproy.roy@gmail.com}")
     private String fromEmail;
     
-    @Value("${spring.mail.enabled:false}")
-    private boolean emailEnabled;
-    
-    @Value("${email.service.from.address:noreply@somdip.dev}")
-    private String defaultFromAddress;
-    
-    @Value("${email.service.from.name:Somdip Roy Portfolio}")
+    @Value("${sendgrid.from.name:Somdip Roy Portfolio}")
     private String fromName;
     
-    /**
-     * Send contact email notification and confirmation
-     * Updated to handle simplified contact form fields with email service validation
-     */
+    @Value("${sendgrid.to.email:somdiproy.roy@gmail.com}")
+    private String toEmail;
+    
+    @Value("${sendgrid.to.name:Somdip Roy}")
+    private String toName;
+    
     public void sendContactEmail(ContactForm contactForm) {
-        // Check if email service is properly configured
-        if (!isEmailConfigured()) {
-            logger.warning("Email service is not configured. Contact form submission logged but not emailed.");
+        if (!sendGridEnabled || sendGridApiKey.isEmpty()) {
+            logger.warn("SendGrid is disabled or API key not configured. Contact form submission logged only.");
             logContactFormSubmission(contactForm);
             return;
         }
         
         try {
-            // Send notification email to yourself
-            sendNotificationEmail(contactForm);
+            // Create email object
+            Mail mail = buildEmail(contactForm);
             
-            // Send confirmation email to the user
-            sendConfirmationEmail(contactForm);
+            // Send email via SendGrid API
+            SendGrid sg = new SendGrid(sendGridApiKey);
+            Request request = new Request();
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
             
-            logger.info("Contact emails sent successfully for: " + contactForm.getEmail());
+            Response response = sg.api(request);
             
-        } catch (Exception e) {
-            // Log the error but don't break the application
-            logger.severe("Error sending email for contact form: " + e.getMessage());
+            if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
+                logger.info("Contact email sent successfully via SendGrid. Status: {}", response.getStatusCode());
+                logger.info("Message-ID: {}", response.getHeaders().get("X-Message-Id"));
+                logContactFormSubmission(contactForm);
+            } else {
+                logger.error("SendGrid API error. Status: {}, Body: {}", 
+                    response.getStatusCode(), response.getBody());
+                throw new RuntimeException("Failed to send email via SendGrid");
+            }
+            
+        } catch (IOException e) {
+            logger.error("Error sending email via SendGrid: {}", e.getMessage());
             logContactFormSubmission(contactForm);
-            
-            // Still throw exception for controller to handle gracefully
             throw new RuntimeException("Failed to send email", e);
         }
     }
     
-    /**
-     * Send notification email to yourself with contact form details
-     */
-    private void sendNotificationEmail(ContactForm contactForm) {
-        if (!isEmailConfigured()) return;
+    private Mail buildEmail(ContactForm contactForm) {
+        // From email (your verified sender)
+        Email from = new Email(fromEmail, fromName);
         
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(getFromAddress());
-        message.setTo(getFromAddress());
-        message.setSubject("Portfolio Contact: " + contactForm.getSubject());
+        // To email (your Gmail)
+        Email to = new Email(toEmail, toName);
         
-        StringBuilder emailBody = new StringBuilder();
-        emailBody.append("New contact form submission:\n\n");
-        emailBody.append("Name: ").append(contactForm.getName()).append("\n");
-        emailBody.append("Email: ").append(contactForm.getEmail()).append("\n");
+        // Subject with sender's name
+        String subject = String.format("[Portfolio Contact] %s - %s", 
+            contactForm.getName(), contactForm.getSubject());
         
-        // Company is optional
+        // Create content
+        Content content = new Content("text/plain", buildEmailContent(contactForm));
+        
+        // Build mail
+        Mail mail = new Mail(from, subject, to, content);
+        
+        // Set reply-to as the sender's email
+        Email replyTo = new Email(contactForm.getEmail(), contactForm.getName());
+        mail.setReplyTo(replyTo);
+        
+        // Add custom headers
+        mail.addHeader("X-Portfolio-Contact", "true");
+        mail.addHeader("X-Sender-Company", contactForm.getCompany() != null ? contactForm.getCompany() : "N/A");
+        
+        // Add personalization
+        Personalization personalization = new Personalization();
+        personalization.addTo(to);
+        
+        // You can add custom substitutions if using templates
+        personalization.addSubstitution("-name-", contactForm.getName());
+        personalization.addSubstitution("-email-", contactForm.getEmail());
+        
+        return mail;
+    }
+    
+    private String buildEmailContent(ContactForm contactForm) {
+        StringBuilder content = new StringBuilder();
+        content.append("New contact form submission from somdip.dev\n\n");
+        content.append("==============================================\n\n");
+        
+        content.append("CONTACT DETAILS:\n");
+        content.append("----------------\n");
+        content.append("Name: ").append(contactForm.getName()).append("\n");
+        content.append("Email: ").append(contactForm.getEmail()).append("\n");
+        
         if (contactForm.getCompany() != null && !contactForm.getCompany().trim().isEmpty()) {
-            emailBody.append("Company: ").append(contactForm.getCompany()).append("\n");
+            content.append("Company: ").append(contactForm.getCompany()).append("\n");
         }
         
-        emailBody.append("Subject: ").append(contactForm.getSubject()).append("\n");
-        emailBody.append("\nMessage:\n").append(contactForm.getMessage());
+        content.append("\nSUBJECT:\n");
+        content.append("----------------\n");
+        content.append(contactForm.getSubject()).append("\n");
         
-        // Add timestamp and source info
-        emailBody.append("\n\n---\n");
-        emailBody.append("Submitted: ").append(new java.util.Date().toString()).append("\n");
-        emailBody.append("Source: Portfolio Website Contact Form\n");
-        emailBody.append("IP: [To be logged by web server]\n");
+        content.append("\nMESSAGE:\n");
+        content.append("----------------\n");
+        content.append(contactForm.getMessage()).append("\n");
         
-        message.setText(emailBody.toString());
-        mailSender.send(message);
+        content.append("\n==============================================\n\n");
+        
+        content.append("Timestamp: ").append(LocalDateTime.now()
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).append(" UTC\n");
+        content.append("Source: Portfolio Website (https://somdip.dev)\n");
+        content.append("IP Address: Available in SendGrid Activity Feed\n");
+        content.append("\n");
+        content.append("Note: You can reply directly to this email to respond to ")
+               .append(contactForm.getName()).append(" at ")
+               .append(contactForm.getEmail());
+        
+        return content.toString();
     }
     
-    /**
-     * Send confirmation email to the user
-     */
-    private void sendConfirmationEmail(ContactForm contactForm) {
-        if (!isEmailConfigured()) return;
-        
-        SimpleMailMessage confirmationMessage = new SimpleMailMessage();
-        confirmationMessage.setFrom(getFromAddress());
-        confirmationMessage.setTo(contactForm.getEmail());
-        confirmationMessage.setSubject("Thank you for contacting Somdip Roy - Senior Technical Architect");
-        
-        String confirmationBody = String.format(
-            "Dear %s,\n\n" +
-            "Thank you for reaching out! I have received your message regarding: \"%s\"\n\n" +
-            "I appreciate your interest and will review your inquiry carefully. " +
-            "I typically respond to all messages within 24 hours during business days.\n\n" +
-            "About Me:\n" +
-            "• Senior Technical Architect with 13+ years of experience\n" +
-            "• Specializing in Java, Spring Boot, AWS, and AI/ML solutions\n" +
-            "• Expert in enterprise architecture and cloud-native applications\n" +
-            "• Led teams of 15+ engineers and delivered 30+ enterprise projects\n\n" +
-            "Connect with me:\n" +
-            "• LinkedIn: https://www.linkedin.com/in/somdip-roy-b8004b111/\n" +
-            "• Portfolio: https://somdip.dev\n" +
-            "• Email: somdiproy.roy@gmail.com\n" +
-            "• Location: Mumbai, Maharashtra, India\n\n" +
-            "If you have any urgent questions or would like to discuss AI/ML solutions, " +
-            "enterprise architecture, or cloud migration strategies, feel free to connect with me on LinkedIn.\n\n" +
-            "Best regards,\n" +
-            "Somdip Roy\n" +
-            "Senior Technical Architect\n" +
-            "13+ Years Experience | Java | Spring Boot | AWS | AI/ML\n\n" +
-            "---\n" +
-            "This is an automated confirmation. Please do not reply to this email.\n" +
-            "For direct communication, use: somdiproy.roy@gmail.com",
-            contactForm.getName(),
-            contactForm.getSubject()
-        );
-        
-        confirmationMessage.setText(confirmationBody);
-        mailSender.send(confirmationMessage);
-    }
-    
-    /**
-     * Log contact form submission when email is not available
-     */
     private void logContactFormSubmission(ContactForm contactForm) {
         logger.info("=== CONTACT FORM SUBMISSION ===");
-        logger.info("Name: " + contactForm.getName());
-        logger.info("Email: " + contactForm.getEmail());
-        logger.info("Company: " + (contactForm.getCompany() != null ? contactForm.getCompany() : "Not provided"));
-        logger.info("Subject: " + contactForm.getSubject());
-        logger.info("Message: " + contactForm.getMessage());
-        logger.info("Timestamp: " + new java.util.Date().toString());
+        logger.info("Name: {}", contactForm.getName());
+        logger.info("Email: {}", contactForm.getEmail());
+        logger.info("Company: {}", contactForm.getCompany());
+        logger.info("Subject: {}", contactForm.getSubject());
+        logger.info("Message: {}", contactForm.getMessage());
+        logger.info("Timestamp: {}", LocalDateTime.now());
         logger.info("==============================");
     }
     
     /**
-     * Utility method to validate email configuration
+     * Test SendGrid configuration
      */
-    public boolean isEmailConfigured() {
-        boolean configured = emailEnabled && 
-                           mailSender != null && 
-                           (fromEmail != null && !fromEmail.trim().isEmpty() || 
-                            defaultFromAddress != null && !defaultFromAddress.trim().isEmpty());
-        
-        if (!configured) {
-            logger.info("Email service status - Enabled: " + emailEnabled + 
-                       ", MailSender: " + (mailSender != null) + 
-                       ", FromEmail: " + (fromEmail != null && !fromEmail.trim().isEmpty()));
-        }
-        
-        return configured;
-    }
-    
-    /**
-     * Get the appropriate from address
-     */
-    private String getFromAddress() {
-        if (fromEmail != null && !fromEmail.trim().isEmpty()) {
-            return fromEmail;
-        }
-        return defaultFromAddress;
-    }
-    
-    /**
-     * Test method to check email service status
-     */
-    public String getEmailServiceStatus() {
-        if (!emailEnabled) {
-            return "Email service is disabled in configuration";
-        }
-        if (mailSender == null) {
-            return "JavaMailSender bean is not available";
-        }
-        if (!isEmailConfigured()) {
-            return "Email configuration is incomplete";
-        }
-        return "Email service is properly configured and ready";
-    }
-    
-    /**
-     * Send a test email to verify configuration
-     */
-    public boolean sendTestEmail() {
-        if (!isEmailConfigured()) {
-            logger.warning("Cannot send test email - service not configured");
+    public boolean testEmailConfiguration() {
+        if (!sendGridEnabled || sendGridApiKey.isEmpty()) {
+            logger.warn("SendGrid is disabled or not configured");
             return false;
         }
         
         try {
-            SimpleMailMessage testMessage = new SimpleMailMessage();
-            testMessage.setFrom(getFromAddress());
-            testMessage.setTo(getFromAddress());
-            testMessage.setSubject("Portfolio Email Service Test");
-            testMessage.setText("This is a test email from the portfolio email service.\n\n" +
-                               "If you receive this, the email configuration is working correctly.\n\n" +
-                               "Timestamp: " + new java.util.Date().toString());
+            Email from = new Email(fromEmail, fromName);
+            Email to = new Email(toEmail, toName);
+            String subject = "Test Email - Portfolio SendGrid Configuration";
+            Content content = new Content("text/plain", 
+                "This is a test email to verify SendGrid API configuration for somdip.dev portfolio.\n\n" +
+                "If you receive this email, your SendGrid configuration is working correctly!\n\n" +
+                "Sent at: " + LocalDateTime.now() + " UTC\n\n" +
+                "SendGrid Features:\n" +
+                "- Delivered via SendGrid Web API v3\n" +
+                "- Activity tracking available in SendGrid dashboard\n" +
+                "- Email analytics and open tracking available");
             
-            mailSender.send(testMessage);
-            logger.info("Test email sent successfully");
-            return true;
+            Mail mail = new Mail(from, subject, to, content);
+            
+            SendGrid sg = new SendGrid(sendGridApiKey);
+            Request request = new Request();
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+            
+            Response response = sg.api(request);
+            
+            if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
+                logger.info("Test email sent successfully via SendGrid. Status: {}", response.getStatusCode());
+                return true;
+            } else {
+                logger.error("Test email failed. Status: {}, Body: {}", 
+                    response.getStatusCode(), response.getBody());
+                return false;
+            }
             
         } catch (Exception e) {
-            logger.severe("Test email failed: " + e.getMessage());
+            logger.error("Test email failed: {}", e.getMessage());
             return false;
         }
     }
